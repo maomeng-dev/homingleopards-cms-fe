@@ -1,0 +1,38 @@
+import React, { Component } from 'react'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Redirect
+} from 'react-router-dom'
+
+import Button from 'antd/lib/button'
+
+import LoginPage from './pages/login/index'
+import MainPage from './pages/main/index'
+import ErrorPage from './pages/error/index'
+
+import './App.css'
+
+class App extends Component {
+  render () {
+    return (
+        <Router>
+          <div className="App">
+            <Switch>
+              <Route exact path="/login" component={LoginPage}/>
+
+              <Route exact path="/" component={MainPage}/>
+              <Route exact path="/user" component={MainPage}/>
+              <Route exact path="/article" component={MainPage}/>
+
+              <Route component={ErrorPage}/>
+            </Switch>
+          </div>
+        </Router>
+    )
+  }
+}
+
+export default App
