@@ -23,8 +23,8 @@ class App extends Component {
                 <Route exact path="/login" component={LoginPage}/>
 
                 <Route exact path="/" component={MainPage}/>
-                <Route exact path="/user/" component={MainPage}/>
                 <Route exact path="/article/" component={MainPage}/>
+                <Route exact path="/user/" component={MainPage}/>
                 <Route exact path="/about/" component={MainPage}/>
 
                 <Route component={ErrorPage}/>

@@ -6,3 +6,8 @@
   color: rgba(255, 255, 255, .65);
   font-size: 18px;
 }
+
+.main-user {
+  color: #1890ff;
+  cursor: pointer;
+}

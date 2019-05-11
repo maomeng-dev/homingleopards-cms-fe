@@ -10,8 +10,8 @@ import {
 } from 'antd'
 
 import MainIndexPage from './index/index'
-import UserListPage from './user/list'
 import ArticleListPage from './article/list'
+import UserListPage from './user/list'
 import AboutPage from './about/index'
 
 import './index.css'
@@ -40,8 +40,8 @@ class MainPage extends Component {
             <div className="f-r">
               欢迎访问，
               <Dropdown overlay={loginMenu} trigger={['click']}>
-                <span className="ant-dropdown-link">
-                  <Icon type="gitlab" theme="filled"/> 用户名 <Icon type="down"/>
+                <span className="ant-dropdown-link main-user">
+                  <Icon type="bars" /> 用户名 <Icon type="down"/>
                 </span>
               </Dropdown>
             </div>
@@ -54,16 +54,16 @@ class MainPage extends Component {
                   mode="inline"
                   style={{ height: '100%', borderRight: 0 }}
               >
-                <Menu.Item key="/user/"><Link to="/user/"><Icon type="team"/>用户管理</Link></Menu.Item>
                 <Menu.Item key="/article/"><Link to="/article/"><Icon type="file-text"/>文章管理</Link></Menu.Item>
+                <Menu.Item key="/user/"><Link to="/user/"><Icon type="team"/>用户管理</Link></Menu.Item>
               </Menu>
             </Sider>
 
             <Layout style={{ padding: '0 24px 24px' }}>
               <Switch>
                 <Route exact path="/" component={MainIndexPage}/>
-                <Route exact path="/user/" component={UserListPage}/>
                 <Route exact path="/article/" component={ArticleListPage}/>
+                <Route exact path="/user/" component={UserListPage}/>
                 <Route exact path="/about/" component={AboutPage}/>
               </Switch>
 
