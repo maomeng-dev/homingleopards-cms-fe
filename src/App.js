@@ -2,12 +2,8 @@ import React, { Component } from 'react'
 import {
   BrowserRouter as Router,
   Route,
-  Link,
   Switch,
-  Redirect
 } from 'react-router-dom'
-
-import Button from 'antd/lib/button'
 
 import LoginPage from './pages/login/index'
 import MainPage from './pages/main/index'
