@@ -1,5 +1,17 @@
 @import '~antd/dist/antd.css';
 
-.App {
+html, body {
+  background-color: #f0f2f5;
+}
+
+.f-l {
+  float: left;
+}
+
+.f-r {
+  float: right;
+}
+
+.ta-c {
   text-align: center;
 }
