@@ -12,6 +12,7 @@ import {
 import MainIndexPage from './index/index'
 import ArticleListPage from './article/list'
 import UserListPage from './user/list'
+import UserItemPage from './user/item'
 import AboutPage from './about/index'
 
 import './index.css'
@@ -64,6 +65,9 @@ class MainPage extends Component {
                 <Route exact path="/" component={MainIndexPage}/>
                 <Route exact path="/article/" component={ArticleListPage}/>
                 <Route exact path="/user/" component={UserListPage}/>
+                <Route exact path="/user/new/" component={UserItemPage}/>
+                <Route exact path="/user/view/:id" component={UserItemPage}/>
+                <Route exact path="/user/edit/:id" component={UserItemPage}/>
                 <Route exact path="/about/" component={AboutPage}/>
               </Switch>
 

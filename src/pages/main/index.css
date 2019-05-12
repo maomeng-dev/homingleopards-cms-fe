@@ -11,3 +11,15 @@
   color: #1890ff;
   cursor: pointer;
 }
+
+.main-table .main-table-actions .ant-btn {
+  margin: 0 10px;
+}
+
+.main-form-buttons {
+  text-align: center;
+}
+
+.main-form-buttons .ant-btn {
+  margin: 0 20px;
+}
