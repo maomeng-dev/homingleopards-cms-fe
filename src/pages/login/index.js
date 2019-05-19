@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Card, Row, Col, Input, Divider, Button, Icon } from 'antd'
+import { Card, Row, Col, Input, Divider, Button, Icon, Modal } from 'antd'
+import axios from 'axios'
 
 import './index.css'
 
@@ -36,7 +37,6 @@ class LoginPage extends Component {
     })
   }
 
-
   onLoginButtonClick () {
     let isInvalid = false
     if (this.state.user.length === 0) {
@@ -53,7 +53,22 @@ class LoginPage extends Component {
     }
 
     if (!isInvalid) {
-      window.location.href = '/'
+      axios
+          .post('/api/login', {
+            params: {
+              user: this.state.user,
+              pass: this.state.pass
+            }
+          })
+          .then((response) => {
+            window.location.href = '/'
+          })
+          .catch((error) => {
+            Modal.error({
+              title: '错误',
+              content: error.message || '发生错误…'
+            })
+          })
     }
   }
 
@@ -73,7 +88,7 @@ class LoginPage extends Component {
                 <img src={this.state.foxImg} style={{ width: '185px', height: '160px' }} alt="欢迎狐狸"/>
               </Col>
               <Col span={14}>
-                <div className={!this.state.userInvalid ? "login-input-row" : "login-input-row has-error"}>
+                <div className={!this.state.userInvalid ? 'login-input-row' : 'login-input-row has-error'}>
                   <Input
                       value={this.state.user}
                       size="large"
@@ -92,7 +107,7 @@ class LoginPage extends Component {
                   />
                 </div>
 
-                <div className={!this.state.passInvalid ? "login-input-row" : "login-input-row has-error"}>
+                <div className={!this.state.passInvalid ? 'login-input-row' : 'login-input-row has-error'}>
                   <Input.Password
                       value={this.state.pass}
                       size="large"
@@ -111,14 +126,14 @@ class LoginPage extends Component {
                 </div>
               </Col>
             </Row>
-            <Divider dashed />
+            <Divider dashed/>
             <Row>
               <Col span={12} className="ta-c">
                 <Button
                     size="large"
                     type="default"
                     icon="delete"
-                    style={{width: '180px'}}
+                    style={{ width: '180px' }}
                     onClick={this.onResetButtonClick.bind(this)}
                 > 清空</Button>
               </Col>
@@ -127,7 +142,7 @@ class LoginPage extends Component {
                     size="large"
                     type="primary"
                     icon="cloud-upload"
-                    style={{width: '180px'}}
+                    style={{ width: '180px' }}
                     onClick={this.onLoginButtonClick.bind(this)}
                 > 登录</Button>
               </Col>

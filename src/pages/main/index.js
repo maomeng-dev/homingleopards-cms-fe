@@ -6,8 +6,10 @@ import {
 } from 'react-router-dom'
 
 import {
-  Layout, Menu, Icon, Dropdown
+  Layout, Menu, Icon, Dropdown, Modal
 } from 'antd'
+
+import axios from 'axios'
 
 import MainIndexPage from './index/index'
 import ArticleListPage from './article/list'
@@ -19,6 +21,37 @@ import './index.css'
 
 const { Header, Sider, Footer } = Layout
 
+class Logout extends Component {
+  constructor (props) {
+    super(props)
+  }
+
+  onLogoutClick () {
+    axios
+        .post('/api/logout')
+        .then((response) => {
+          window.location.href = '/login/'
+        })
+        .catch((error) => {
+          Modal.error({
+            title: '错误',
+            content: error.message || '发生错误…'
+          })
+        })
+  }
+
+  render () {
+    return (
+        <span
+            className="link-button"
+            onClick={this.onLogoutClick.bind(this)}
+        >
+          注销
+        </span>
+    )
+  }
+}
+
 class MainPage extends Component {
   render () {
     const loginMenu = (
@@ -27,7 +60,7 @@ class MainPage extends Component {
             <Link to="/about/">关于</Link>
           </Menu.Item>
           <Menu.Item key="1">
-            <a href="/login/">登出</a>
+            <Logout/>
           </Menu.Item>
         </Menu>
     )
@@ -42,7 +75,7 @@ class MainPage extends Component {
               欢迎访问，
               <Dropdown overlay={loginMenu} trigger={['click']}>
                 <span className="ant-dropdown-link main-user">
-                  <Icon type="bars" /> 用户名 <Icon type="down"/>
+                  <Icon type="bars"/> 用户名 <Icon type="down"/>
                 </span>
               </Dropdown>
             </div>

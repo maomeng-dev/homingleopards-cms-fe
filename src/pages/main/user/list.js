@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Layout, Table, Divider, Tag, Row, Col, Button } from 'antd'
+import { Breadcrumb, Layout, Table, Divider, Tag, Row, Col, Button, Spin, Icon, Modal } from 'antd'
+import axios from 'axios'
 
 const { Content } = Layout
 
@@ -8,39 +9,81 @@ class UserListPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      userList: []
+      userList: [],
+      loading: true,
+
+      pagination: {
+        current: 1,
+        pageSize: 10,
+        total: 100
+      }
     }
   }
 
+  componentDidMount () {
+    this.getUserList(this.state.pagination.current)
+  }
+
   onPageChange (target) {
+    this.getUserList(target)
+  }
+
+  getUserList (page) {
     this.setState({
-      userList: [
-        {
-          key: '00000',
-          id: '00000',
-          role: '0',
-          title: '猫盟管理员',
-          username: 'admin',
-          comment: '猫盟管理员帐号'
-        },
-        {
-          key: '10000',
-          id: '10000',
-          role: '1',
-          title: '猫盟小老弟',
-          username: 'myname1',
-          comment: '实习生小A'
-        },
-        {
-          key: '10001',
-          id: '10001',
-          role: '1',
-          title: '阿狐狸',
-          username: 'konru',
-          comment: '给狐狸的帐号'
-        }
-      ]
+      loading: true
     })
+
+    axios
+        .get('/api/user', {
+          params: {
+            page
+          }
+        })
+        .finally((response) => {
+          let data = [
+            {
+              key: '00000',
+              id: '00000',
+              role: '0',
+              title: '猫盟管理员',
+              username: 'admin',
+              comment: '猫盟管理员帐号'
+            },
+            {
+              key: '10000',
+              id: '10000',
+              role: '1',
+              title: '猫盟小老弟',
+              username: 'myname1',
+              comment: '实习生小A'
+            },
+            {
+              key: '10001',
+              id: '10001',
+              role: '1',
+              title: '阿狐狸',
+              username: 'konru',
+              comment: '给狐狸的帐号'
+            }
+          ]
+
+          this.setState({
+            userList: data,
+            loading: false,
+
+            pagination: {
+              current: page,
+              pageSize: 10,
+              total: 100
+            }
+          })
+        })
+        .catch((error) => {
+          Modal.error({
+            title: '错误',
+            content: error.message || '发生错误…'
+          })
+        })
   }
 
   render () {
@@ -128,17 +171,17 @@ class UserListPage extends Component {
 
             <Row>
               <Col span={24}>
-                <Table
-                    className="main-table"
-                    columns={columns}
-                    dataSource={this.state.userList}
-                    pagination={{
-                      defaultCurrent: 1,
-                      pageSize: 10,
-                      total: 100,
-                      onChange: this.onPageChange.bind(this)
-                    }}
-                />
+                <Spin spinning={this.state.loading} tip="加载中…" indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />}>
+                  <Table
+                      className="main-table"
+                      columns={columns}
+                      dataSource={this.state.userList}
+                      pagination={{
+                        ...this.state.pagination,
+                        onChange: this.onPageChange.bind(this)
+                      }}
+                  />
+                </Spin>
               </Col>
             </Row>
           </Content>
