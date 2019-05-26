@@ -17,25 +17,27 @@ import UserListPage from './user/list'
 import UserItemPage from './user/item'
 import AboutPage from './about/index'
 
+import API from '../../components/api'
+import checkAjax from '../../utils/checkAjax'
+
 import './index.css'
 
 const { Header, Sider, Footer } = Layout
 
 class Logout extends Component {
-  constructor (props) {
-    super(props)
-  }
-
   onLogoutClick () {
     axios
-        .post('/api/logout')
-        .then((response) => {
+        .post(API.LOGOUT)
+        .then((res) => {
+          return checkAjax(res)
+        })
+        .then((data) => {
           window.location.href = '/login/'
         })
-        .catch((error) => {
+        .catch((err) => {
           Modal.error({
             title: '错误',
-            content: error.message || '发生错误…'
+            content: err.message || '发生错误…'
           })
         })
   }
@@ -53,6 +55,33 @@ class Logout extends Component {
 }
 
 class MainPage extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      username: ''
+    }
+  }
+
+  componentDidMount () {
+    axios
+        .get('/')
+        .then((res) => {
+          return checkAjax(res)
+        })
+        .then((data) => {
+          this.setState({
+            username: data.info.user_name
+          })
+        })
+        .catch((err) => {
+          Modal.error({
+            title: '错误',
+            content: err.message || '发生错误…'
+          })
+        })
+  }
+
   render () {
     const loginMenu = (
         <Menu>
@@ -75,7 +104,7 @@ class MainPage extends Component {
               欢迎访问，
               <Dropdown overlay={loginMenu} trigger={['click']}>
                 <span className="ant-dropdown-link main-user">
-                  <Icon type="bars"/> 用户名 <Icon type="down"/>
+                  <Icon type="bars"/> {this.state.username} <Icon type="down"/>
                 </span>
               </Dropdown>
             </div>

@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { Card, Row, Col, Input, Divider, Button, Icon, Modal } from 'antd'
 import axios from 'axios'
 
+import API from '../../components/api'
+import checkAjax from '../../utils/checkAjax'
+
 import './index.css'
 
 import imgFoxUser from '../../assets/img/fox-user.png'
@@ -54,19 +57,22 @@ class LoginPage extends Component {
 
     if (!isInvalid) {
       axios
-          .post('/api/login', {
+          .post(API.LOGIN, {
             params: {
-              user: this.state.user,
-              pass: this.state.pass
+              user_name: this.state.user,
+              user_pass: this.state.pass
             }
           })
-          .then((response) => {
+          .then((res) => {
+            return checkAjax(res)
+          })
+          .then((data) => {
             window.location.href = '/'
           })
-          .catch((error) => {
+          .catch((err) => {
             Modal.error({
               title: '错误',
-              content: error.message || '发生错误…'
+              content: err.message || '发生错误…'
             })
           })
     }

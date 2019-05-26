@@ -1,11 +1,13 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Layout, Table, Divider, Tag, Row, Col, Button, Form, Input, Tooltip, Icon, Cascader, Select, Checkbox, AutoComplete, Modal } from 'antd'
+import { Breadcrumb, Layout, Row, Col, Button, Form, Input, Icon, Select, Modal, Spin } from 'antd'
 
 import axios from 'axios'
 
+import API from '../../../components/api'
+import checkAjax from '../../../utils/checkAjax'
+
 const { Option } = Select
-const AutoCompleteOption = AutoComplete.Option
 
 const { Content } = Layout
 const { TextArea } = Input
@@ -13,12 +15,42 @@ const { TextArea } = Input
 class UserForm extends Component {
   constructor (props) {
     super(props)
+    this.state = {
+      resetPassword: false
+    }
   }
 
   handleSubmit () {
     this.props.form.validateFields((err, values) => {
+      if (this.props.mode === 'edit' && !this.state.resetPassword) {
+        if (err instanceof Object) {
+          delete err.password
+          delete err.confirm
+          if (Object.keys(err).length === 0) {
+            err = null
+          }
+        }
+      }
+
       if (!err) {
-        console.log('Received values of form: ', values)
+        axios
+            .post(API.USER_SAVE, {
+              params: {
+                ...values
+              }
+            })
+            .then((res) => {
+              return checkAjax(res)
+            })
+            .then((data) => {
+              console.log('Received values of form: ', values)
+            })
+            .catch((err) => {
+              Modal.error({
+                title: '错误',
+                content: err.message || '发生错误…'
+              })
+            })
       }
     })
   }
@@ -54,25 +86,18 @@ class UserForm extends Component {
 
     const userData = this.props.data
 
-    /**
-     UID
-     角色
-     用户
-     帐号
-     备注
-     */
     const formItems = {
-      'title': getFieldDecorator('title', {
-        rules: [{ required: true, message: '请输入用户名' }],
-        initialValue: userData.title
+      'nickname': getFieldDecorator('nickname', {
+        rules: [{ required: true, message: '请输入昵称' }],
+        initialValue: userData.nickname
       })(
-          <Input placeholder="请输入用户名…"/>
+          <Input placeholder="请输入昵称…"/>
       ),
       'username': getFieldDecorator('username', {
         rules: [{ required: true, message: '请输入帐号' }],
-        initialValue: userData.username
+        initialValue: userData.user_name
       })(
-          <Input placeholder="请输入帐号…"/>
+          <Input placeholder="请输入帐号…" disabled={(this.props.mode === 'new') ? false : true}/>
       ),
       'password': getFieldDecorator('password', {
         rules: [{
@@ -104,49 +129,74 @@ class UserForm extends Component {
         <Form>
           <Form.Item {...formItemLayout} label="UID">
             {this.createFormItem({
-              'view': (<span>{userData.uid || '--'}</span>),
-              'edit': (<span>{userData.uid || '--'}</span>),
+              'view': (<span>{userData.id || '--'}</span>),
+              'edit': (<span>{userData.id || '--'}</span>),
               'new': (<span>尚未创建</span>)
             })}
           </Form.Item>
 
           <Form.Item {...formItemLayout} label="角色">
             {this.createFormItem({
-              'view': (<span>编辑</span>),
-              'edit': (<Select defaultValue="1" disabled><Option value="1">编辑</Option></Select>),
-              'new': (<Select defaultValue="1" disabled><Option value="1">编辑</Option></Select>)
-            })}
-          </Form.Item>
-
-          <Form.Item {...formItemLayout} label="用户名">
-            {this.createFormItem({
-              'view': (<span>{userData.title || '--'}</span>),
-              'edit': formItems.title,
-              'new': formItems.title
+              'view': (<span>{userData.is_super_user ? '管理员' : '编辑'}</span>),
+              'edit': (
+                  <Select defaultValue={userData.is_super_user ? '1' : '2'} disabled style={{ width: 200 }}><Option value="1">管理员</Option><Option value="2">编辑</Option></Select>),
+              'new': (
+                  <Select defaultValue={userData.is_super_user ? '1' : '2'} disabled style={{ width: 200 }}><Option value="1">管理员</Option><Option value="2">编辑</Option></Select>)
             })}
           </Form.Item>
 
           <Form.Item {...formItemLayout} label="帐号">
             {this.createFormItem({
-              'view': (<span>{userData.username || '--'}</span>),
+              'view': (<span>{userData.user_name || '--'}</span>),
               'edit': formItems.username,
               'new': formItems.username
             })}
           </Form.Item>
 
-          <Form.Item {...formItemLayout} label="密码">
-            {this.createFormItem({
-              'view': (<span>{userData.password || '--'}</span>),
-              'edit': formItems.password,
-              'new': formItems.password
-            })}
-          </Form.Item>
+          {(() => {
+            if (this.props.mode === 'view') {
+              return null
+            } else if ((this.props.mode === 'edit' && this.state.resetPassword) || this.props.mode === 'new') {
+              return (
+                  <Fragment>
+                    <Form.Item {...formItemLayout} label="密码">
+                      {this.createFormItem({
+                        'view': null,
+                        'edit': formItems.password,
+                        'new': formItems.password
+                      })}
+                    </Form.Item>
+                    <Form.Item {...formItemLayout} label="确认密码">
+                      {this.createFormItem({
+                        'view': null,
+                        'edit': formItems.confirm,
+                        'new': formItems.confirm
+                      })}
+                    </Form.Item>
+                  </Fragment>
+              )
+            } else {
+              return (
+                  <Fragment>
+                    <Form.Item {...formItemLayout} label="密码">
+                      <Button icon="rest" type="danger" onClick={() => {
+                        this.setState({
+                          resetPassword: true
+                        })
+                      }}>
+                        重置密码
+                      </Button>
+                    </Form.Item>
+                  </Fragment>
+              )
+            }
+          })()}
 
-          <Form.Item {...formItemLayout} label="确认密码">
+          <Form.Item {...formItemLayout} label="昵称">
             {this.createFormItem({
-              'view': (<span>{userData.confirm || '--'}</span>),
-              'edit': formItems.confirm,
-              'new': formItems.confirm
+              'view': (<span>{userData.nickname || '--'}</span>),
+              'edit': formItems.nickname,
+              'new': formItems.nickname
             })}
           </Form.Item>
 
@@ -158,18 +208,61 @@ class UserForm extends Component {
             })}
           </Form.Item>
 
-          <Form.Item className="main-form-buttons">
-            <Row>
-              <Col span={12}>
-                <Button icon="delete" size="large" type="danger" onClick={this.handleDelete.bind(this)}>
-                  删除
-                </Button>
-                <Button icon="cloud-upload" size="large" type="primary" onClick={this.handleSubmit.bind(this)}>
-                  提交
-                </Button>
-              </Col>
-            </Row>
-          </Form.Item>
+          {
+            this.props.mode === 'view'
+                ? (
+                    <Fragment>
+                      <Form.Item {...formItemLayout} label="创建时间">
+                        {userData.cre_time}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="上次登录时间">
+                        {userData.last_login_time}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="上次登录IP">
+                        <a href={`https://www.query-ip.com/?ip=${userData.last_login_ip}`} target="_blank" rel="noopener noreferrer"><Icon type="global"/> {userData.last_login_ip}
+                        </a>
+                      </Form.Item>
+                    </Fragment>
+                )
+                : null
+          }
+
+          {
+            this.props.mode !== 'view'
+                ? (
+                    <Form.Item className="main-form-buttons">
+                      <Row>
+                        <Col span={12}>
+                          {
+                            this.props.mode === 'edit'
+                                ? (
+                                    <Button icon="delete" size="large" type="danger" onClick={this.handleDelete.bind(this)}>
+                                      删除
+                                    </Button>
+                                )
+                                : null
+                          }
+                          <Button icon="cloud-upload" size="large" type="primary" onClick={this.handleSubmit.bind(this)}>
+                            提交
+                          </Button>
+                        </Col>
+                      </Row>
+                    </Form.Item>
+                )
+                : (
+                    <Form.Item className="main-form-buttons">
+                      <Row>
+                        <Col span={12}>
+                          <Link to="/user/">
+                            <Button icon="double-left" size="large" type="primary" onClick={this.handleDelete.bind(this)}>
+                              返回列表
+                            </Button>
+                          </Link>
+                        </Col>
+                      </Row>
+                    </Form.Item>
+                )
+          }
         </Form>
     )
   }
@@ -181,6 +274,7 @@ class UserItemPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      loading: true,
       mode: '',
       id: '',
       userData: {}
@@ -195,30 +289,34 @@ class UserItemPage extends Component {
   }
 
   componentDidMount () {
-    axios
-        .get('/api/user/detail', {
-          params: {
-            uid: this.state.uid
-          }
-        })
-        .finally((response) => {
-          let data = {
-            'title': '阿狐狸九',
-            'username': 'konrumi',
-            'password': '7heCa1<e15a1ie',
-            'comment': '是我了了了了'
-          }
-
-          this.setState({
-            userData: data
+    if (this.state.mode === 'new') {
+      this.setState({
+        loading: false,
+        userData: {}
+      })
+    } else {
+      axios
+          .get(API.USER_INFO, {
+            params: {
+              id: this.state.uid
+            }
           })
-        })
-        .catch((error) => {
-          Modal.error({
-            title: '错误',
-            content: error.message || '发生错误…'
+          .then((res) => {
+            return checkAjax(res)
           })
-        })
+          .then((data) => {
+            this.setState({
+              loading: false,
+              userData: data.info
+            })
+          })
+          .catch((err) => {
+            Modal.error({
+              title: '错误',
+              content: err.message || '发生错误…'
+            })
+          })
+    }
   }
 
   render () {
@@ -239,6 +337,9 @@ class UserItemPage extends Component {
                 case 'edit' :
                   result = (<Breadcrumb.Item>编辑用户</Breadcrumb.Item>)
                   break
+                default :
+                  result = null
+                  break
               }
               return result
             })()}
@@ -247,15 +348,15 @@ class UserItemPage extends Component {
             background: '#fff', padding: 24, margin: 0, minHeight: 280
           }}
           >
-            {this.state.mode}, {this.state.uid}
-
-            <PageUserForm
-                mode={this.state.mode}
-                data={{
-                  ...this.state.userData,
-                  uid: this.state.uid
-                }}
-            />
+            <Spin tip="加载中…" spinning={this.state.loading}>
+              <PageUserForm
+                  mode={this.state.mode}
+                  data={{
+                    ...this.state.userData,
+                    uid: this.state.uid
+                  }}
+              />
+            </Spin>
           </Content>
         </div>
     )

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Layout, Table, Divider, Tag, Row, Col, Button, Spin, Icon, Modal } from 'antd'
+import { Breadcrumb, Layout, Table, Row, Col, Button, Spin, Icon, Modal } from 'antd'
 import axios from 'axios'
+import API from '../../../components/api'
+import checkAjax from '../../../utils/checkAjax'
 
 const { Content } = Layout
 
@@ -34,54 +36,31 @@ class UserListPage extends Component {
     })
 
     axios
-        .get('/api/user', {
+        .get(API.USER_LIST, {
           params: {
-            page
+            page: page,
+            pageSize: 10
           }
         })
-        .finally((response) => {
-          let data = [
-            {
-              key: '00000',
-              id: '00000',
-              role: '0',
-              title: '猫盟管理员',
-              username: 'admin',
-              comment: '猫盟管理员帐号'
-            },
-            {
-              key: '10000',
-              id: '10000',
-              role: '1',
-              title: '猫盟小老弟',
-              username: 'myname1',
-              comment: '实习生小A'
-            },
-            {
-              key: '10001',
-              id: '10001',
-              role: '1',
-              title: '阿狐狸',
-              username: 'konru',
-              comment: '给狐狸的帐号'
-            }
-          ]
-
+        .then((res) => {
+          return checkAjax(res)
+        })
+        .then((data) => {
           this.setState({
-            userList: data,
+            userList: data.list,
             loading: false,
 
             pagination: {
-              current: page,
-              pageSize: 10,
-              total: 100
+              current: data.page.current,
+              pageSize: data.page.size,
+              total: data.page.total
             }
           })
         })
-        .catch((error) => {
+        .catch((err) => {
           Modal.error({
             title: '错误',
-            content: error.message || '发生错误…'
+            content: err.message || '发生错误…'
           })
         })
   }
@@ -96,29 +75,23 @@ class UserListPage extends Component {
       },
       {
         title: '角色',
-        dataIndex: 'role',
-        key: 'role',
+        dataIndex: 'is_super_user',
+        key: 'is_super_user',
         width: 100,
         render: (text, record) => {
           let result = ''
-          switch (text) {
-            case '0' :
-              text = '管理员'
-              break
-            case '1' :
-              text = '普通用户'
-              break
-            default :
-              text = '其他角色'
-              break
+          if (record.is_super_user) {
+            result = '管理员'
+          } else {
+            result = '编辑'
           }
           return result
         }
       },
       {
-        title: '用户',
-        dataIndex: 'title',
-        key: 'title',
+        title: '昵称',
+        dataIndex: 'nickname',
+        key: 'nickname',
         width: 200,
         render: (text, record) => (
             <Link to={`/user/view/${record.id}`}>{text}</Link>
@@ -126,8 +99,8 @@ class UserListPage extends Component {
       },
       {
         title: '帐号',
-        dataIndex: 'username',
-        key: 'username',
+        dataIndex: 'user_name',
+        key: 'user_name',
         width: 200
       },
       {
@@ -171,10 +144,12 @@ class UserListPage extends Component {
 
             <Row>
               <Col span={24}>
-                <Spin spinning={this.state.loading} tip="加载中…" indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />}>
+                <Spin spinning={this.state.loading} tip="加载中…" indicator={
+                  <Icon type="loading" style={{ fontSize: 24 }} spin/>}>
                   <Table
                       className="main-table"
                       columns={columns}
+                      rowKey="id"
                       dataSource={this.state.userList}
                       pagination={{
                         ...this.state.pagination,
