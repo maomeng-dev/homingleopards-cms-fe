@@ -1,14 +1,14 @@
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Layout, Row, Col, Button, Form, Input, Icon, Select, Modal, Spin } from 'antd'
+import { Breadcrumb, Layout, Row, Col, Button, Form, Input, Icon, Select, Modal, Spin, Table } from 'antd'
 
 import axios from 'axios'
+import moment from 'moment'
 
 import API from '../../../components/api'
-import checkAjax from '../../../utils/checkAjax'
+import responsePreprocessing from '../../../utils/responsePreprocessing'
 
 const { Option } = Select
-
 const { Content } = Layout
 const { TextArea } = Input
 
@@ -16,8 +16,61 @@ class UserForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      resetPassword: false
+      resetPassword: false,
+      logLoading: true,
+      userLog: [],
+
+      logPagination: {
+        current: 1,
+        pageSize: 10,
+        total: 0
+      }
     }
+  }
+
+  componentDidMount () {
+    // get user log
+    if (this.props.mode === 'view') {
+      this.getLogList(this.state.logPagination.current)
+    }
+  }
+
+  onLogPageChange (target) {
+    this.getLogList(target)
+  }
+
+  getLogList (page) {
+    this.setState({
+      logLoading: true
+    })
+
+    axios
+        .get(API.USER_LOG, {
+          params: {
+            page: page,
+            pageSize: 10,
+            id: this.state.uid
+          }
+        })
+        .then((res) => {
+          return responsePreprocessing(res)
+        })
+        .then((data) => {
+          data.list.forEach((item, index) => {
+            item.index = index + 1
+          })
+
+          this.setState({
+            logLoading: false,
+            userLog: data.list,
+
+            logPagination: {
+              current: data.page.current,
+              pageSize: data.page.size,
+              total: data.page.total
+            }
+          })
+        })
   }
 
   handleSubmit () {
@@ -33,22 +86,32 @@ class UserForm extends Component {
       }
 
       if (!err) {
+        let postData = {
+          id: this.props.data.id,
+          user_name: values.username,
+          nickname: values.nickname,
+          comment: values.comment
+        }
+        if (values.password) {
+          postData.user_pass = values.password
+        }
+
         axios
             .post(API.USER_SAVE, {
-              params: {
-                ...values
-              }
+              params: postData
             })
             .then((res) => {
-              return checkAjax(res)
+              return responsePreprocessing(res)
             })
             .then((data) => {
-              console.log('Received values of form: ', values)
-            })
-            .catch((err) => {
-              Modal.error({
-                title: '错误',
-                content: err.message || '发生错误…'
+              Modal.success({
+                title: '保存成功',
+                footer: null,
+                closable: false,
+                maskClosable: false,
+                onOk: () => {
+                  window.location.href = '/user/'
+                }
               })
             })
       }
@@ -56,7 +119,29 @@ class UserForm extends Component {
   }
 
   handleDelete () {
-
+    Modal.confirm({
+      title: '确认删除此用户吗？',
+      onOk: () => {
+        axios
+            .post(API.USER_DELETE, {
+              id: this.props.data.id
+            })
+            .then((res) => {
+              return responsePreprocessing(res)
+            })
+            .then((data) => {
+              Modal.success({
+                title: '删除成功',
+                footer: null,
+                closable: false,
+                maskClosable: false,
+                onOk: () => {
+                  window.location.href = '/user/'
+                }
+              })
+            })
+      }
+    })
   }
 
   triggerValidatePassword = (rule, value, callback) => {
@@ -79,12 +164,47 @@ class UserForm extends Component {
 
   render () {
     const { getFieldDecorator } = this.props.form
+    const userData = this.props.data
     const formItemLayout = {
       labelCol: { span: 2 },
       wrapperCol: { span: 10 }
     }
 
-    const userData = this.props.data
+    const logColumns = [
+      {
+        title: '#',
+        dataIndex: 'index',
+        key: 'index'
+      },
+      {
+        title: '操作类型',
+        dataIndex: 'action_explain',
+        key: 'action_explain'
+      },
+      {
+        title: '操作描述',
+        dataIndex: 'log_content',
+        key: 'log_content'
+      },
+      {
+        title: '操作时间',
+        dataIndex: 'action_date',
+        key: 'action_date',
+        render: (timeStamp) => {
+          return (<span>{moment(new Date(timeStamp)).format('YYYY-MM-DD HH:mm:ss')}</span>)
+        }
+      },
+      {
+        title: '操作IP',
+        dataIndex: 'ip',
+        key: 'ip',
+        render: (ip) => {
+          return (
+              <a href={`https://www.query-ip.com/?ip=${ip}`} target="_blank" rel="noopener noreferrer"><Icon type="global"/> {ip}
+              </a>)
+        }
+      }
+    ]
 
     const formItems = {
       'nickname': getFieldDecorator('nickname', {
@@ -97,7 +217,7 @@ class UserForm extends Component {
         rules: [{ required: true, message: '请输入帐号' }],
         initialValue: userData.user_name
       })(
-          <Input placeholder="请输入帐号…" disabled={(this.props.mode === 'new') ? false : true}/>
+          <Input placeholder="请输入帐号…" disabled={(this.props.mode !== 'new')}/>
       ),
       'password': getFieldDecorator('password', {
         rules: [{
@@ -213,14 +333,33 @@ class UserForm extends Component {
                 ? (
                     <Fragment>
                       <Form.Item {...formItemLayout} label="创建时间">
-                        {userData.cre_time}
+                        {moment(new Date(userData.cre_time)).format('YYYY-MM-DD HH:mm:ss')}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="上次登录时间">
-                        {userData.last_login_time}
+                        {moment(new Date(userData.last_login_time)).format('YYYY-MM-DD HH:mm:ss')}
                       </Form.Item>
                       <Form.Item {...formItemLayout} label="上次登录IP">
                         <a href={`https://www.query-ip.com/?ip=${userData.last_login_ip}`} target="_blank" rel="noopener noreferrer"><Icon type="global"/> {userData.last_login_ip}
                         </a>
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="用户操作日志">
+                        <Spin
+                            spinning={this.state.logLoading}
+                            tip="加载中…"
+                            indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
+                        >
+                          <Table
+                              dataSource={this.state.userLog}
+                              columns={logColumns}
+                              rowKey="index"
+
+                              pagination={{
+                                ...this.state.pagination,
+                                onChange: this.onLogPageChange.bind(this)
+                              }}
+                          />
+                        </Spin>
+
                       </Form.Item>
                     </Fragment>
                 )
@@ -254,7 +393,7 @@ class UserForm extends Component {
                       <Row>
                         <Col span={12}>
                           <Link to="/user/">
-                            <Button icon="double-left" size="large" type="primary" onClick={this.handleDelete.bind(this)}>
+                            <Button icon="double-left" size="large" type="primary">
                               返回列表
                             </Button>
                           </Link>
@@ -274,9 +413,9 @@ class UserItemPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      loading: true,
+      pageLoading: true,
       mode: '',
-      id: '',
+      uid: '',
       userData: {}
     }
   }
@@ -289,9 +428,11 @@ class UserItemPage extends Component {
   }
 
   componentDidMount () {
+    // get user data
     if (this.state.mode === 'new') {
       this.setState({
-        loading: false,
+        pageLoading: false,
+        logLoading: false,
         userData: {}
       })
     } else {
@@ -302,18 +443,12 @@ class UserItemPage extends Component {
             }
           })
           .then((res) => {
-            return checkAjax(res)
+            return responsePreprocessing(res)
           })
           .then((data) => {
             this.setState({
-              loading: false,
+              pageLoading: false,
               userData: data.info
-            })
-          })
-          .catch((err) => {
-            Modal.error({
-              title: '错误',
-              content: err.message || '发生错误…'
             })
           })
     }
@@ -348,12 +483,11 @@ class UserItemPage extends Component {
             background: '#fff', padding: 24, margin: 0, minHeight: 280
           }}
           >
-            <Spin tip="加载中…" spinning={this.state.loading}>
+            <Spin tip="加载中…" spinning={this.state.pageLoading}>
               <PageUserForm
                   mode={this.state.mode}
                   data={{
-                    ...this.state.userData,
-                    uid: this.state.uid
+                    ...this.state.userData
                   }}
               />
             </Spin>

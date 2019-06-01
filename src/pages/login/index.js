@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Card, Row, Col, Input, Divider, Button, Icon, Modal } from 'antd'
+import { Card, Row, Col, Input, Divider, Button, Icon } from 'antd'
 import axios from 'axios'
 
 import API from '../../components/api'
-import checkAjax from '../../utils/checkAjax'
+import responsePreprocessing from '../../utils/responsePreprocessing'
 
 import './index.css'
 
@@ -58,22 +58,14 @@ class LoginPage extends Component {
     if (!isInvalid) {
       axios
           .post(API.LOGIN, {
-            params: {
-              user_name: this.state.user,
-              user_pass: this.state.pass
-            }
+            user_name: this.state.user,
+            user_pass: this.state.pass
           })
           .then((res) => {
-            return checkAjax(res)
+            return responsePreprocessing(res)
           })
           .then((data) => {
             window.location.href = '/'
-          })
-          .catch((err) => {
-            Modal.error({
-              title: '错误',
-              content: err.message || '发生错误…'
-            })
           })
     }
   }

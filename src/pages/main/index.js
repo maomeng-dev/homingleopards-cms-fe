@@ -5,9 +5,7 @@ import {
   Link
 } from 'react-router-dom'
 
-import {
-  Layout, Menu, Icon, Dropdown, Modal
-} from 'antd'
+import { Layout, Menu, Icon, Dropdown } from 'antd'
 
 import axios from 'axios'
 
@@ -18,7 +16,7 @@ import UserItemPage from './user/item'
 import AboutPage from './about/index'
 
 import API from '../../components/api'
-import checkAjax from '../../utils/checkAjax'
+import responsePreprocessing from '../../utils/responsePreprocessing'
 
 import './index.css'
 
@@ -29,16 +27,10 @@ class Logout extends Component {
     axios
         .post(API.LOGOUT)
         .then((res) => {
-          return checkAjax(res)
+          return responsePreprocessing(res)
         })
         .then((data) => {
           window.location.href = '/login/'
-        })
-        .catch((err) => {
-          Modal.error({
-            title: '错误',
-            content: err.message || '发生错误…'
-          })
         })
   }
 
@@ -65,19 +57,13 @@ class MainPage extends Component {
 
   componentDidMount () {
     axios
-        .get('/')
+        .get(API.USER_INFO)
         .then((res) => {
-          return checkAjax(res)
+          return responsePreprocessing(res)
         })
         .then((data) => {
           this.setState({
             username: data.info.user_name
-          })
-        })
-        .catch((err) => {
-          Modal.error({
-            title: '错误',
-            content: err.message || '发生错误…'
           })
         })
   }

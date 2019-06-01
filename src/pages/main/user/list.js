@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Breadcrumb, Layout, Table, Row, Col, Button, Spin, Icon, Modal } from 'antd'
 import axios from 'axios'
 import API from '../../../components/api'
-import checkAjax from '../../../utils/checkAjax'
+import responsePreprocessing from '../../../utils/responsePreprocessing'
 
 const { Content } = Layout
 
@@ -17,7 +17,7 @@ class UserListPage extends Component {
       pagination: {
         current: 1,
         pageSize: 10,
-        total: 100
+        total: 0
       }
     }
   }
@@ -30,9 +30,38 @@ class UserListPage extends Component {
     this.getUserList(target)
   }
 
+  handleDelete (uid) {
+    Modal.confirm({
+      title: '确认删除此用户吗？',
+      onOk: () => {
+        axios
+            .post(API.USER_DELETE, {
+              id: uid
+            })
+            .then((res) => {
+              return responsePreprocessing(res)
+            })
+            .then((data) => {
+              Modal.success({
+                title: '删除成功',
+                footer: null,
+                closable: false,
+                maskClosable: false,
+                onOk: () => {
+                  this.setState({
+                    userList: []
+                  })
+                  this.getUserList(this.state.pagination.current)
+                }
+              })
+            })
+      }
+    })
+  }
+
   getUserList (page) {
     this.setState({
-      loading: true
+      pageLoading: true
     })
 
     axios
@@ -43,24 +72,18 @@ class UserListPage extends Component {
           }
         })
         .then((res) => {
-          return checkAjax(res)
+          return responsePreprocessing(res)
         })
         .then((data) => {
           this.setState({
             userList: data.list,
-            loading: false,
+            pageLoading: false,
 
             pagination: {
               current: data.page.current,
               pageSize: data.page.size,
               total: data.page.total
             }
-          })
-        })
-        .catch((err) => {
-          Modal.error({
-            title: '错误',
-            content: err.message || '发生错误…'
           })
         })
   }
@@ -115,7 +138,7 @@ class UserListPage extends Component {
         render: (text, record) => (
             <span className="main-table-actions">
               <Link to={`/user/edit/${record.id}`}><Button icon="edit">编辑</Button></Link>
-              <Button type="danger" icon="delete">删除</Button>
+              <Button type="danger" icon="delete" onClick={this.handleDelete.bind(this, record.id)}>删除</Button>
             </span>
         )
       }
@@ -144,8 +167,11 @@ class UserListPage extends Component {
 
             <Row>
               <Col span={24}>
-                <Spin spinning={this.state.loading} tip="加载中…" indicator={
-                  <Icon type="loading" style={{ fontSize: 24 }} spin/>}>
+                <Spin
+                    spinning={this.state.pageLoading}
+                    tip="加载中…"
+                    indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
+                >
                   <Table
                       className="main-table"
                       columns={columns}
