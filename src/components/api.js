@@ -2,7 +2,7 @@
 
 const hostConfig = {
   'development': 'https://mockapi.eolinker.com/B6Qfv1De71c9384926e1ab7740c529265ca648ec92702ed',
-  'production': ''
+  'production': 'https://api.dev.homingleopards.org' // use dev host for prod env temporary
 }
 const HOST = hostConfig[process.env.NODE_ENV] || ''
 
