@@ -24,14 +24,16 @@ const { Header, Sider, Footer } = Layout
 
 class Logout extends Component {
   onLogoutClick () {
-    axios
-        .post(API.LOGOUT)
-        .then((res) => {
-          return responsePreprocessing(res)
-        })
-        .then((data) => {
-          window.location.href = '/login/'
-        })
+    axios({
+      method: 'post',
+      url: API.LOGOUT,
+      withCredentials: true
+    }).then((res) => {
+      return responsePreprocessing(res)
+    })
+      .then((data) => {
+        window.location.href = '/login/'
+      })
   }
 
   render () {
@@ -56,16 +58,17 @@ class MainPage extends Component {
   }
 
   componentDidMount () {
-    axios
-        .get(API.USER_INFO)
-        .then((res) => {
-          return responsePreprocessing(res)
-        })
-        .then((data) => {
-          this.setState({
-            username: data.info.user_name
-          })
-        })
+    axios({
+      method: 'get',
+      url: API.USER_INFO,
+      withCredentials: true
+    }).then((res) => {
+      return responsePreprocessing(res)
+    }).then((data) => {
+      this.setState({
+        username: data.info.user_name
+      })
+    })
   }
 
   render () {

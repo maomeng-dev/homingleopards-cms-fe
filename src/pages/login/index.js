@@ -56,17 +56,19 @@ class LoginPage extends Component {
     }
 
     if (!isInvalid) {
-      axios
-          .post(API.LOGIN, {
-            user_name: this.state.user,
-            user_pass: this.state.pass
-          })
-          .then((res) => {
-            return responsePreprocessing(res)
-          })
-          .then((data) => {
-            window.location.href = '/'
-          })
+      axios({
+        method: 'post',
+        url: API.LOGIN,
+        data: {
+          user_name: this.state.user,
+          user_pass: this.state.pass
+        },
+        withCredentials: true
+      }).then((res) => {
+        return responsePreprocessing(res)
+      }).then((data) => {
+        window.location.href = '/'
+      })
     }
   }
 

@@ -44,33 +44,33 @@ class UserForm extends Component {
       logLoading: true
     })
 
-    axios
-        .get(API.USER_LOG, {
-          params: {
-            page: page,
-            pageSize: 10,
-            id: this.state.uid
-          }
-        })
-        .then((res) => {
-          return responsePreprocessing(res)
-        })
-        .then((data) => {
-          data.list.forEach((item, index) => {
-            item.index = index + 1
-          })
+    axios({
+      method: 'get',
+      url: API.USER_LOG,
+      params: {
+        page: page,
+        pageSize: 10,
+        id: this.state.uid
+      },
+      withCredentials: true
+    }).then((res) => {
+      return responsePreprocessing(res)
+    }).then((data) => {
+      data.list.forEach((item, index) => {
+        item.index = index + 1
+      })
 
-          this.setState({
-            logLoading: false,
-            userLog: data.list,
+      this.setState({
+        logLoading: false,
+        userLog: data.list,
 
-            logPagination: {
-              current: data.page.current,
-              pageSize: data.page.size,
-              total: data.page.total
-            }
-          })
-        })
+        logPagination: {
+          current: data.page.current,
+          pageSize: data.page.size,
+          total: data.page.total
+        }
+      })
+    })
   }
 
   handleSubmit () {
@@ -96,24 +96,26 @@ class UserForm extends Component {
           postData.user_pass = values.password
         }
 
-        axios
-            .post(API.USER_SAVE, {
-              params: postData
-            })
-            .then((res) => {
-              return responsePreprocessing(res)
-            })
-            .then((data) => {
-              Modal.success({
-                title: '保存成功',
-                footer: null,
-                closable: false,
-                maskClosable: false,
-                onOk: () => {
-                  window.location.href = '/user/'
-                }
-              })
-            })
+        axios({
+          method: 'post',
+          url: API.USER_SAVE,
+          data: {
+            params: postData
+          },
+          withCredentials: true
+        }).then((res) => {
+          return responsePreprocessing(res)
+        }).then((data) => {
+          Modal.success({
+            title: '保存成功',
+            footer: null,
+            closable: false,
+            maskClosable: false,
+            onOk: () => {
+              window.location.href = '/user/'
+            }
+          })
+        })
       }
     })
   }
@@ -122,24 +124,26 @@ class UserForm extends Component {
     Modal.confirm({
       title: '确认删除此用户吗？',
       onOk: () => {
-        axios
-            .post(API.USER_DELETE, {
-              id: this.props.data.id
-            })
-            .then((res) => {
-              return responsePreprocessing(res)
-            })
-            .then((data) => {
-              Modal.success({
-                title: '删除成功',
-                footer: null,
-                closable: false,
-                maskClosable: false,
-                onOk: () => {
-                  window.location.href = '/user/'
-                }
-              })
-            })
+        axios({
+          method: 'post',
+          url: API.USER_DELETE,
+          data: {
+            id: this.props.data.id
+          },
+          withCredentials: true
+        }).then((res) => {
+          return responsePreprocessing(res)
+        }).then((data) => {
+          Modal.success({
+            title: '删除成功',
+            footer: null,
+            closable: false,
+            maskClosable: false,
+            onOk: () => {
+              window.location.href = '/user/'
+            }
+          })
+        })
       }
     })
   }
@@ -436,21 +440,21 @@ class UserItemPage extends Component {
         userData: {}
       })
     } else {
-      axios
-          .get(API.USER_INFO, {
-            params: {
-              id: this.state.uid
-            }
-          })
-          .then((res) => {
-            return responsePreprocessing(res)
-          })
-          .then((data) => {
-            this.setState({
-              pageLoading: false,
-              userData: data.info
-            })
-          })
+      axios({
+        method: 'get',
+        url: API.USER_INFO,
+        params: {
+          id: this.state.uid
+        },
+        withCredentials: true
+      }).then((res) => {
+        return responsePreprocessing(res)
+      }).then((data) => {
+        this.setState({
+          pageLoading: false,
+          userData: data.info
+        })
+      })
     }
   }
 

@@ -34,27 +34,29 @@ class UserListPage extends Component {
     Modal.confirm({
       title: '确认删除此用户吗？',
       onOk: () => {
-        axios
-            .post(API.USER_DELETE, {
-              id: uid
-            })
-            .then((res) => {
-              return responsePreprocessing(res)
-            })
-            .then((data) => {
-              Modal.success({
-                title: '删除成功',
-                footer: null,
-                closable: false,
-                maskClosable: false,
-                onOk: () => {
-                  this.setState({
-                    userList: []
-                  })
-                  this.getUserList(this.state.pagination.current)
-                }
+        axios({
+          method: 'post',
+          url: API.USER_DELETE,
+          data: {
+            id: uid
+          },
+          withCredentials: true
+        }).then((res) => {
+          return responsePreprocessing(res)
+        }).then((data) => {
+          Modal.success({
+            title: '删除成功',
+            footer: null,
+            closable: false,
+            maskClosable: false,
+            onOk: () => {
+              this.setState({
+                userList: []
               })
-            })
+              this.getUserList(this.state.pagination.current)
+            }
+          })
+        })
       }
     })
   }
@@ -64,28 +66,28 @@ class UserListPage extends Component {
       pageLoading: true
     })
 
-    axios
-        .get(API.USER_LIST, {
-          params: {
-            page: page,
-            pageSize: 10
-          }
-        })
-        .then((res) => {
-          return responsePreprocessing(res)
-        })
-        .then((data) => {
-          this.setState({
-            userList: data.list,
-            pageLoading: false,
+    axios({
+      method: 'get',
+      url: API.USER_LIST,
+      params: {
+        page: page,
+        pageSize: 10
+      },
+      withCredentials: true
+    }).then((res) => {
+      return responsePreprocessing(res)
+    }).then((data) => {
+      this.setState({
+        userList: data.list,
+        pageLoading: false,
 
-            pagination: {
-              current: data.page.current,
-              pageSize: data.page.size,
-              total: data.page.total
-            }
-          })
-        })
+        pagination: {
+          current: data.page.current,
+          pageSize: data.page.size,
+          total: data.page.total
+        }
+      })
+    })
   }
 
   render () {
