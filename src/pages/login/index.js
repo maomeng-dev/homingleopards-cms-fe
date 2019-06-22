@@ -7,8 +7,8 @@ import responsePreprocessing from '../../utils/responsePreprocessing'
 
 import './index.css'
 
-import imgFoxUser from '../../assets/img/fox-user.png'
-import imgFoxPass from '../../assets/img/fox-pass.png'
+import imgFoxUser from '../../assets/img/fox-user.gif'
+import imgFoxPass from '../../assets/img/fox-pass.gif'
 
 class LoginPage extends Component {
   constructor (props) {
@@ -82,12 +82,12 @@ class LoginPage extends Component {
   render () {
     return (
         <div className="login">
-          <Card title="带豹回家官网 - 管理系统 登录" className="login-card">
+          <Card title="🐆 带豹回家官网 - 管理系统 // 用户登录" className="login-card">
             <Row>
-              <Col span={10}>
-                <img src={this.state.foxImg} style={{ width: '185px', height: '160px' }} alt="欢迎狐狸"/>
+              <Col span={8}>
+                <img className="login-input-img" src={this.state.foxImg} alt="欢迎狐狸" title="狐狸向您问好~"/>
               </Col>
-              <Col span={14}>
+              <Col span={16}>
                 <div className={!this.state.userInvalid ? 'login-input-row' : 'login-input-row has-error'}>
                   <Input
                       value={this.state.user}
