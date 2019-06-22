@@ -75,17 +75,16 @@ class UserForm extends Component {
 
   handleSubmit () {
     this.props.form.validateFields((err, values) => {
-      if (this.props.mode === 'edit' && !this.state.resetPassword) {
-        if (err instanceof Object) {
+      if (this.props.mode === 'edit' && err instanceof Object) {
+        // remove username / password error
+        delete err.username
+        if (!this.state.resetPassword) {
           delete err.password
           delete err.confirm
-          if (Object.keys(err).length === 0) {
-            err = null
-          }
         }
       }
 
-      if (!err) {
+      if (!err || Object.keys(err).length === 0) {
         let postData = {
           id: this.props.data.id,
           user_name: values.username,
@@ -94,6 +93,9 @@ class UserForm extends Component {
         }
         if (values.password) {
           postData.user_pass = values.password
+        }
+        if (this.props.mode === 'edit') {
+          delete postData.user_name
         }
 
         axios({
