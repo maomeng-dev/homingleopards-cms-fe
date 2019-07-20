@@ -24,6 +24,7 @@ class App extends Component {
 
                 <Route exact path="/" component={MainPage}/>
                 <Route exact path="/article/" component={MainPage}/>
+                <Route exact path="/article/new/" component={MainPage}/>
                 <Route exact path="/user/" component={MainPage}/>
                 <Route exact path="/user/new/" component={MainPage}/>
                 <Route exact path="/user/view/:id" component={MainPage}/>

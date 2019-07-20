@@ -7,14 +7,17 @@ const hostConfig = {
 const HOST = hostConfig[process.env.NODE_ENV] || ''
 
 const API = {
-  'LOGIN': `${HOST}/api/backend/user/login/`,
-  'LOGOUT': `${HOST}/api/backend/user/logout/`,
+  'LOGIN': `${HOST}/api/backend/user/login`,
+  'LOGOUT': `${HOST}/api/backend/user/logout`,
 
   'USER_INFO': `${HOST}/api/backend/user/info`,
   'USER_LIST': `${HOST}/api/backend/user/list`,
   'USER_SAVE': `${HOST}/api/backend/user/save`,
   'USER_DELETE': `${HOST}/api/backend/user/delete`,
-  'USER_LOG': `${HOST}/api/backend/user/logs`
+  'USER_LOG': `${HOST}/api/backend/user/logs`,
+
+  'ARTICLE_LIST': `${HOST}/api/backend/article/local_list`,
+  'ARTICLE_WECHAT_LIST': `${HOST}/api/backend/article/wechat_list`,
 }
 
 export default API

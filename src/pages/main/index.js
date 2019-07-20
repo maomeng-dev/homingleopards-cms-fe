@@ -11,6 +11,7 @@ import axios from 'axios'
 
 import MainIndexPage from './index/index'
 import ArticleListPage from './article/list'
+import ArticleItemPage from './article/item'
 import UserListPage from './user/list'
 import UserItemPage from './user/item'
 import AboutPage from './about/index'
@@ -115,6 +116,7 @@ class MainPage extends Component {
               <Switch>
                 <Route exact path="/" component={MainIndexPage}/>
                 <Route exact path="/article/" component={ArticleListPage}/>
+                <Route exact path="/article/new/" component={ArticleItemPage}/>
                 <Route exact path="/user/" component={UserListPage}/>
                 <Route exact path="/user/new/" component={UserItemPage}/>
                 <Route exact path="/user/view/:id" component={UserItemPage}/>

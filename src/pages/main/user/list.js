@@ -136,7 +136,7 @@ class UserListPage extends Component {
       {
         title: '操作',
         key: 'action',
-        width: 300,
+        width: 240,
         render: (text, record) => (
             <span className="main-table-actions">
               <Link to={`/user/edit/${record.id}`}><Button icon="edit">编辑</Button></Link>
