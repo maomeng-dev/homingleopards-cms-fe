@@ -34,6 +34,10 @@ class UserListPage extends Component {
     Modal.confirm({
       title: '确认删除此用户吗？',
       onOk: () => {
+        this.setState({
+          pageLoading: true
+        })
+
         axios({
           method: 'post',
           url: API.USER_DELETE,
@@ -50,9 +54,6 @@ class UserListPage extends Component {
             closable: false,
             maskClosable: false,
             onOk: () => {
-              this.setState({
-                userList: []
-              })
               this.getUserList(this.state.pagination.current)
             }
           })
@@ -63,7 +64,8 @@ class UserListPage extends Component {
 
   getUserList (page) {
     this.setState({
-      pageLoading: true
+      pageLoading: true,
+      userList: []
     })
 
     axios({

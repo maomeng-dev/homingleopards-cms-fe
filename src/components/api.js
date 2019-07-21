@@ -18,6 +18,8 @@ const API = {
 
   'ARTICLE_LIST': `${HOST}/api/backend/article/local_list`,
   'ARTICLE_WECHAT_LIST': `${HOST}/api/backend/article/wechat_list`,
+  'ARTICLE_IMPORT_WECHAT_ARTICLE': `${HOST}/api/backend/article/import_wechat_article`,
+  'ARTICLE_DELETE': `${HOST}/api/backend/article/delete_local_article`,
 }
 
 export default API

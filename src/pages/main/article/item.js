@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Layout, Row, Col, Button, Form, Input, Icon, Select, Modal, Spin, Table, Tooltip } from 'antd'
+import { Breadcrumb, Layout, Row, Col, Button, Icon, Spin, Table, Tooltip, message } from 'antd'
 
 import axios from 'axios'
 import moment from 'moment'
@@ -8,9 +8,7 @@ import moment from 'moment'
 import API from '../../../components/api'
 import responsePreprocessing from '../../../utils/responsePreprocessing'
 
-const { Option } = Select
 const { Content } = Layout
-const { TextArea } = Input
 
 class ArticleItemPage extends Component {
   constructor (props) {
@@ -37,6 +35,32 @@ class ArticleItemPage extends Component {
     this.getWechatList(target)
   }
 
+  onSyncArticle (target) {
+    this.setState({
+      wechatListLoading: true
+    })
+
+    let params = {
+      media_id: target.media_id
+    }
+
+    if (target.article_id !== 0) {
+      params.article_id = target.article_id
+    }
+
+    axios({
+      method: 'post',
+      url: API.ARTICLE_IMPORT_WECHAT_ARTICLE,
+      data: params,
+      withCredentials: true
+    }).then((res) => {
+      return responsePreprocessing(res)
+    }).then((data) => {
+      message.success(`文章《${data.info.title}》导入成功！`)
+      this.getWechatList(this.state.pagination.current)
+    })
+  }
+
   getWechatList (page) {
     this.setState({
       wechatListLoading: true,
@@ -55,7 +79,6 @@ class ArticleItemPage extends Component {
     }).then((res) => {
       return responsePreprocessing(res)
     }).then((data) => {
-      console.log(data)
       this.setState({
         wechatList: data.list,
         wechatListLoading: false,
@@ -89,10 +112,7 @@ class ArticleItemPage extends Component {
         title: '标题',
         dataIndex: 'title',
         key: 'title',
-        width: 400,
-        render: (text, record) => {
-          return <a>{text}</a>
-        }
+        width: 400
       },
       {
         title: '摘要',
@@ -103,21 +123,26 @@ class ArticleItemPage extends Component {
         title: '时间',
         dataIndex: 'time',
         key: 'time',
-        width: 200,
+        width: 300,
         render: (text, record) => {
-          console.log(record)
-          return '123'
+          return (
+              <Fragment>
+                <div>更新时间：{moment(new Date(record.update_time)).format('YYYY-MM-DD HH:mm:ss')}</div>
+                <div>创建时间：{moment(new Date(record.create_time)).format('YYYY-MM-DD HH:mm:ss')}</div>
+              </Fragment>
+          )
         }
       },
       {
         title: '操作',
         key: 'action',
-        width: 200,
+        width: 100,
         render: (text, record) => {
           return (
-              <Button type="primary" icon="check" disabled={record.article_id !== 0}>
-                选择导入
-              </Button>
+              record.article_id === 0
+                  ?
+                  <Button type="primary" icon="cloud-download" onClick={this.onSyncArticle.bind(this, record)}>导入</Button>
+                  : <Button icon="reload" onClick={this.onSyncArticle.bind(this, record)}>更新</Button>
           )
         }
       }
@@ -127,7 +152,7 @@ class ArticleItemPage extends Component {
         <div>
           <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item><Link to="/">首页</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to="/user/">文章管理</Link></Breadcrumb.Item>
+            <Breadcrumb.Item><Link to="/article/">文章管理</Link></Breadcrumb.Item>
             <Breadcrumb.Item>导入文章</Breadcrumb.Item>
           </Breadcrumb>
           <Content style={{
@@ -136,7 +161,7 @@ class ArticleItemPage extends Component {
           >
             <Row>
               <Col span={24}>
-                <h3>微信文章列表</h3>
+                <h2>导入微信文章</h2>
               </Col>
             </Row>
             <Spin tip="加载中…" spinning={this.state.wechatListLoading}>

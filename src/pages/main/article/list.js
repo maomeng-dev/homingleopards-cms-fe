@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Button, Col, Icon, Layout, Modal, Row, Spin, Table } from 'antd'
+import { Breadcrumb, Button, Col, Icon, Layout, message, Modal, Row, Spin, Table } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
 
@@ -32,12 +32,63 @@ class ArticleListPage extends Component {
     this.getArticleList(target)
   }
 
-  handleDelete (uid) {
+  handleDelete (item) {
+    Modal.confirm({
+      title: '确认删除此文章吗？',
+      onOk: () => {
+        this.setState({
+          pageLoading: true
+        })
+
+        axios({
+          method: 'post',
+          url: API.ARTICLE_DELETE,
+          data: {
+            id: item.id
+          },
+          withCredentials: true
+        }).then((res) => {
+          return responsePreprocessing(res)
+        }).then((data) => {
+          Modal.success({
+            title: '删除成功',
+            footer: null,
+            closable: false,
+            maskClosable: false,
+            onOk: () => {
+              this.getArticleList(this.state.pagination.current)
+            }
+          })
+        })
+      }
+    })
+  }
+
+  handleSync (item) {
+    this.setState({
+      pageLoading: true
+    })
+
+    axios({
+      method: 'post',
+      url: API.ARTICLE_IMPORT_WECHAT_ARTICLE,
+      data: {
+        article_id: item.id,
+        media_id: item.media_id
+      },
+      withCredentials: true
+    }).then((res) => {
+      return responsePreprocessing(res)
+    }).then((data) => {
+      message.success(`文章《${data.info.title}》导入成功！`)
+      this.getArticleList(this.state.pagination.current)
+    })
   }
 
   getArticleList (page) {
     this.setState({
-      pageLoading: true
+      pageLoading: true,
+      articleList: []
     })
 
     axios({
@@ -76,10 +127,7 @@ class ArticleListPage extends Component {
         title: '标题',
         dataIndex: 'title',
         key: 'title',
-        width: 400,
-        render: (text, record) => {
-          return <a>{text}</a>
-        }
+        width: 400
       },
       {
         title: '摘要',
@@ -107,8 +155,8 @@ class ArticleListPage extends Component {
         width: 240,
         render: (text, record) => (
             <span className="main-table-actions">
-              <Link to={`/user/edit/${record.id}`}><Button icon="reload">更新</Button></Link>
-              <Button type="danger" icon="delete" onClick={this.handleDelete.bind(this, record.id)}>删除</Button>
+              <Button icon="reload" onClick={this.handleSync.bind(this, record)}>更新</Button>
+              <Button type="danger" icon="delete" onClick={this.handleDelete.bind(this, record)}>删除</Button>
             </span>
         )
       }
@@ -130,7 +178,7 @@ class ArticleListPage extends Component {
               </Col>
               <Col span={12}>
                 <div className="f-r">
-                  <Link to="/article/new/"><Button type="primary" icon="plus">添加文章</Button></Link>
+                  <Link to="/article/new/"><Button type="primary" icon="cloud-download">导入文章</Button></Link>
                 </div>
               </Col>
             </Row>
