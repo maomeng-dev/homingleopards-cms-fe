@@ -11,7 +11,7 @@ yarn install
 
 # build fe files
 echo 'Start to build fe files...'
-PUBLIC_URL=https://cdn.homingleopards.org/layout/dist/cms/ yarn build
+PUBLIC_URL=https://cdn.homingleopards.org/cms/layout/dist/ yarn build
 
 # zip fe files
 echo 'Start to zip files...'
