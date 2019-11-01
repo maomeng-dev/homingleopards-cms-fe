@@ -4,8 +4,8 @@ import {
   Route,
   Switch
 } from 'react-router-dom'
-import { LocaleProvider } from 'antd'
-import zh_CN from 'antd/lib/locale-provider/zh_CN'
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/es/locale/zh_CN';
 
 import LoginPage from './pages/login'
 import MainPage from './pages/main'
@@ -16,7 +16,7 @@ import './App.css'
 class App extends Component {
   render () {
     return (
-        <LocaleProvider locale={zh_CN}>
+        <ConfigProvider locale={zhCN}>
           <Router>
             <div className="App">
               <Switch>
@@ -35,7 +35,7 @@ class App extends Component {
               </Switch>
             </div>
           </Router>
-        </LocaleProvider>
+        </ConfigProvider>
     )
   }
 }
