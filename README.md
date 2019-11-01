@@ -1,68 +1,71 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 猫盟 CFCA - 《带豹回家》官网后台
 
-## Available Scripts
+用于管理 **猫盟 CFCA - [《带豹回家》官网](https://homingleopards.org/)** 的后台，前端部分。
 
-In the project directory, you can run:
+## 开始项目
 
-### `npm start`
+由 `create-react-app` 搭建，使用 `Ant-Design` 构成页面。
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+开发相关，请参考 [项目文档](src/readme.md) 。
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### 环境
 
-### `npm test`
+1. 安装 `Node.js` 环境。（[Node.js 官网](https://nodejs.org/zh-cn/)）
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. 安装 `Yarn`。（[Yarn 官网](https://yarnpkg.com/zh-Hans/)）
 
-### `npm run build`
+### 安装
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone 项目。
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+``` shell script
+git clone https://github.com/maomeng-dev/homingleopards-cms-fe.git
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. 安装依赖
 
-### `npm run eject`
+``` shell script
+yarn install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. 启动项目
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+``` shell script
+yarn start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+4. 访问项目
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+[http://localhost:3000](http://localhost:3000)
 
-## Learn More
+5. 进行开发
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+开发相关，请参考 [项目文档](src/readme.md) 。
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 上线
 
-### Code Splitting
+1. 本地构建
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+``` shell script
+yarn run online
+```
 
-### Analyzing the Bundle Size
+执行命令，将前端资源构建打包为 `cms-fe-build.tar.gz` 。
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+2. 部署静态资源
 
-### Making a Progressive Web App
+将静态资源包，移动到生产环境服务器。（目前位置为： `/data/maomeng/cms-fe/` ）
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+## 依赖
 
-### Advanced Configuration
+* [Node.js](https://nodejs.org/zh-cn/)
+* [Yarn](https://yarnpkg.com/zh-Hans/)
+* [Ant Design](https://ant.design/index-cn)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## 参与
 
-### Deployment
+如果有任何问题，欢迎 [提 issue](https://github.com/maomeng-dev/homingleopards-cms-fe/issues)，或 `Fork` 后提起 `Pull request` 。
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+## License
 
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+使用 MIT License，查看 [LICENSE.md](LICENSE.md)
