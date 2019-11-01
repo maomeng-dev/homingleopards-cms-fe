@@ -6,7 +6,7 @@
 
 由 `create-react-app` 搭建，使用 `Ant-Design` 构成页面。
 
-开发相关，请参考 [项目文档](src/README.md) 。
+项目代码相关，请参考 [项目开发文档](src/README.md) 。
 
 ### 环境
 
@@ -36,11 +36,11 @@ yarn start
 
 4. 访问项目
 
-[http://localhost:3000](http://localhost:3000)
+浏览器访问 [http://localhost:3000](http://localhost:3000)
 
 5. 进行开发
 
-开发相关，请参考 [项目文档](src/README.md) 。
+项目代码相关，请参考 [项目开发文档](src/README.md) 。
 
 ## 上线
 
