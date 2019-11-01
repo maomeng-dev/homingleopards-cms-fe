@@ -22,23 +22,23 @@
 git clone https://github.com/maomeng-dev/homingleopards-cms-fe.git
 ```
 
-2. 安装依赖
+2. 安装依赖。
 
 ``` shell script
 yarn install
 ```
 
-3. 启动项目
+3. 启动项目。
 
 ``` shell script
 yarn start
 ```
 
-4. 访问项目
+4. 访问项目。
 
-浏览器访问 [http://localhost:3000](http://localhost:3000)
+浏览器访问 [http://localhost:3000](http://localhost:3000) 。
 
-5. 进行开发
+5. 进行开发。
 
 项目代码相关，请参考 [项目开发文档](src/README.md) 。
 
@@ -54,7 +54,7 @@ yarn run online
 
 2. 部署静态资源
 
-将静态资源包，移动到生产环境服务器。（目前位置为： `/data/maomeng/cms-fe/` ）
+将静态资源包，移动到生产环境服务器（目前位置为： `/data/maomeng/cms-fe/` ）。
 
 ## 依赖
 
@@ -68,4 +68,4 @@ yarn run online
 
 ## License
 
-使用 MIT License，查看 [LICENSE.md](LICENSE)
+使用 MIT License，查看 [LICENSE.md](LICENSE) 。
