@@ -247,7 +247,7 @@ class UserForm extends Component {
       'comment': getFieldDecorator('comment', {
         initialValue: userData.comment
       })(
-          <TextArea placeholder="请输入备注…" autosize={{ minRows: 2, maxRows: 6 }}/>
+          <TextArea placeholder="请输入备注…" autoSize={{ minRows: 2, maxRows: 6 }}/>
       )
     }
 

@@ -103,12 +103,12 @@ class MainPage extends Component {
           <Layout>
             <Sider width={200} style={{ background: '#fff' }}>
               <Menu
-                  selectedKeys={(() => {return [window.location.pathname]})()}
+                  selectedKeys={(() => {return [(window.location.pathname.split('/')[1] || '')]})()}
                   mode="inline"
                   style={{ height: '100%', borderRight: 0 }}
               >
-                <Menu.Item key="/article/"><Link to="/article/"><Icon type="file-text"/>文章管理</Link></Menu.Item>
-                <Menu.Item key="/user/"><Link to="/user/"><Icon type="team"/>用户管理</Link></Menu.Item>
+                <Menu.Item key="article"><Link to="/article/"><Icon type="file-text"/>文章管理</Link></Menu.Item>
+                <Menu.Item key="user"><Link to="/user/"><Icon type="team"/>用户管理</Link></Menu.Item>
               </Menu>
             </Sider>
 
