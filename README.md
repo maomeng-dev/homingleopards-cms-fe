@@ -6,7 +6,7 @@
 
 由 `create-react-app` 搭建，使用 `Ant-Design` 构成页面。
 
-开发相关，请参考 [项目文档](src/readme.md) 。
+开发相关，请参考 [项目文档](src/README.md) 。
 
 ### 环境
 
@@ -40,7 +40,7 @@ yarn start
 
 5. 进行开发
 
-开发相关，请参考 [项目文档](src/readme.md) 。
+开发相关，请参考 [项目文档](src/README.md) 。
 
 ## 上线
 
@@ -68,4 +68,4 @@ yarn run online
 
 ## License
 
-使用 MIT License，查看 [LICENSE.md](LICENSE.md)
+使用 MIT License，查看 [LICENSE.md](LICENSE)
