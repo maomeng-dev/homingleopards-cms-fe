@@ -9,12 +9,12 @@ import { Layout, Menu, Icon, Dropdown } from 'antd'
 
 import axios from 'axios'
 
-import MainIndexPage from './index/index'
+import MainHomePage from './home'
 import ArticleListPage from './article/list'
 import ArticleItemPage from './article/item'
 import UserListPage from './user/list'
 import UserItemPage from './user/item'
-import AboutPage from './about/index'
+import AboutPage from './about'
 
 import API from '../../components/api'
 import responsePreprocessing from '../../utils/responsePreprocessing'
@@ -114,7 +114,7 @@ class MainPage extends Component {
 
             <Layout style={{ padding: '0 24px 24px' }}>
               <Switch>
-                <Route exact path="/" component={MainIndexPage}/>
+                <Route exact path="/" component={MainHomePage}/>
                 <Route exact path="/article/" component={ArticleListPage}/>
                 <Route exact path="/article/new/" component={ArticleItemPage}/>
                 <Route exact path="/user/" component={UserListPage}/>

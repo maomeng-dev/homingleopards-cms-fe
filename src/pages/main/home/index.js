@@ -4,7 +4,7 @@ import { Breadcrumb, Layout, Card, Row, Col, Icon } from 'antd'
 
 const { Content } = Layout
 
-class MainIndexPage extends Component {
+class MainHomePage extends Component {
   render () {
     return (
         <div>
@@ -51,4 +51,4 @@ class MainIndexPage extends Component {
   }
 }
 
-export default MainIndexPage
+export default MainHomePage

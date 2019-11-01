@@ -7,9 +7,9 @@ import {
 import { LocaleProvider } from 'antd'
 import zh_CN from 'antd/lib/locale-provider/zh_CN'
 
-import LoginPage from './pages/login/index'
-import MainPage from './pages/main/index'
-import ErrorPage from './pages/error/index'
+import LoginPage from './pages/login'
+import MainPage from './pages/main'
+import ErrorPage from './pages/error'
 
 import './App.css'
 
@@ -20,7 +20,7 @@ class App extends Component {
           <Router>
             <div className="App">
               <Switch>
-                <Route exact path="/login" component={LoginPage}/>
+                <Route exact path="/login/" component={LoginPage}/>
 
                 <Route exact path="/" component={MainPage}/>
                 <Route exact path="/article/" component={MainPage}/>
