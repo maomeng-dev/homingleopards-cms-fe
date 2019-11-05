@@ -63,12 +63,15 @@ class UserForm extends Component {
       this.setState({
         logLoading: false,
         userLog: data.list,
-
         logPagination: {
           current: data.page.current,
           pageSize: data.page.size,
           total: data.page.total
         }
+      })
+    }).catch(err => {
+      this.setState({
+        logLoading: false
       })
     })
   }

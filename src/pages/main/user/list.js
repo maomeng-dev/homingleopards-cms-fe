@@ -57,6 +57,10 @@ class UserListPage extends Component {
               this.getUserList(this.state.pagination.current)
             }
           })
+        }).catch(err => {
+          this.setState({
+            pageLoading: false
+          })
         })
       }
     })
@@ -64,8 +68,7 @@ class UserListPage extends Component {
 
   getUserList (page) {
     this.setState({
-      pageLoading: true,
-      userList: []
+      pageLoading: true
     })
 
     axios({
@@ -88,6 +91,10 @@ class UserListPage extends Component {
           pageSize: data.page.size,
           total: data.page.total
         }
+      })
+    }).catch(err => {
+      this.setState({
+        pageLoading: false
       })
     })
   }

@@ -58,14 +58,16 @@ class ArticleItemPage extends Component {
     }).then((data) => {
       message.success(`文章《${data.info.title}》导入成功！`)
       this.getWechatList(this.state.pagination.current)
+    }).catch(err => {
+      this.setState({
+        wechatListLoading: false
+      })
     })
   }
 
   getWechatList (page) {
     this.setState({
-      wechatListLoading: true,
-
-      wechatList: []
+      wechatListLoading: true
     })
 
     axios({
@@ -82,12 +84,15 @@ class ArticleItemPage extends Component {
       this.setState({
         wechatList: data.list,
         wechatListLoading: false,
-
         pagination: {
           current: data.page.current,
           pageSize: data.page.size,
           total: data.page.total
         }
+      })
+    }).catch(err => {
+      this.setState({
+        wechatListLoading: false
       })
     })
   }

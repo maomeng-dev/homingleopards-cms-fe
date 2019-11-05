@@ -59,6 +59,10 @@ class ArticleListPage extends Component {
               this.getArticleList(this.state.pagination.current)
             }
           })
+        }).catch(err => {
+          this.setState({
+            pageLoading: false
+          })
         })
       }
     })
@@ -82,13 +86,16 @@ class ArticleListPage extends Component {
     }).then((data) => {
       message.success(`文章《${data.info.title}》导入成功！`)
       this.getArticleList(this.state.pagination.current)
+    }).catch(err => {
+      this.setState({
+        pageLoading: false
+      })
     })
   }
 
   getArticleList (page) {
     this.setState({
       pageLoading: true,
-      articleList: []
     })
 
     axios({
@@ -105,12 +112,15 @@ class ArticleListPage extends Component {
       this.setState({
         articleList: data.list,
         pageLoading: false,
-
         pagination: {
           current: data.page.current,
           pageSize: data.page.size,
           total: data.page.total
         }
+      })
+    }).catch(err => {
+      this.setState({
+        pageLoading: false,
       })
     })
   }
