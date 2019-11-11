@@ -39,7 +39,7 @@ class ArticleItemPage extends Component {
       wechatListLoading: true
     })
 
-    let params = {
+    const params = {
       media_id: target.media_id
     }
 
@@ -60,7 +60,10 @@ class ArticleItemPage extends Component {
         message.success(`文章《${data.info.title}》导入成功！`)
         this.getWechatList(this.state.pagination.current)
       })
-      .catch(err => {
+      .catch((err) => {
+        if (err) {
+          console.log(err)
+        }
         this.setState({
           wechatListLoading: false
         })
@@ -96,6 +99,9 @@ class ArticleItemPage extends Component {
         })
       })
       .catch(err => {
+        if (err) {
+          console.log(err)
+        }
         this.setState({
           wechatListLoading: false
         })

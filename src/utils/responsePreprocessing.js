@@ -1,14 +1,14 @@
 import { Modal } from 'antd'
 
-const responsePreprocessing = function(res, silent = false, errorMap = {}) {
+const responsePreprocessing = function (res, silent = false, errorMap = {}) {
   return new Promise((resolve, reject) => {
-    let resData = res.data
+    const resData = res.data
     if (resData.errno === 0) {
       // response ok
       resolve(resData.data)
     } else {
       // response with error
-      let message = errorMap[resData.errno] || resData.errmsg
+      const message = errorMap[resData.errno] || resData.errmsg
 
       switch (resData.errno) {
         case 1001:
@@ -36,7 +36,7 @@ const responsePreprocessing = function(res, silent = false, errorMap = {}) {
           break
       }
 
-      reject({ message })
+      reject(new Error(message))
     }
   })
 }

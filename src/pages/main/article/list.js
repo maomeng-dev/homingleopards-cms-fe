@@ -63,6 +63,9 @@ class ArticleListPage extends Component {
             })
           })
           .catch(err => {
+            if (err) {
+              console.log(err)
+            }
             this.setState({
               pageLoading: false
             })
@@ -93,6 +96,9 @@ class ArticleListPage extends Component {
         this.getArticleList(this.state.pagination.current)
       })
       .catch(err => {
+        if (err) {
+          console.log(err)
+        }
         this.setState({
           pageLoading: false
         })
@@ -128,6 +134,9 @@ class ArticleListPage extends Component {
         })
       })
       .catch(err => {
+        if (err) {
+          console.log(err)
+        }
         this.setState({
           pageLoading: false
         })

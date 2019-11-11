@@ -61,6 +61,9 @@ class UserListPage extends Component {
             })
           })
           .catch(err => {
+            if (err) {
+              console.log(err)
+            }
             this.setState({
               pageLoading: false
             })
@@ -99,6 +102,9 @@ class UserListPage extends Component {
         })
       })
       .catch(err => {
+        if (err) {
+          console.log(err)
+        }
         this.setState({
           pageLoading: false
         })

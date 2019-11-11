@@ -73,6 +73,9 @@ class UserForm extends Component {
         })
       })
       .catch(err => {
+        if (err) {
+          console.log(err)
+        }
         this.setState({
           logLoading: false
         })
@@ -91,7 +94,7 @@ class UserForm extends Component {
       }
 
       if (!err || Object.keys(err).length === 0) {
-        let postData = {
+        const postData = {
           id: this.props.data.id,
           user_name: values.username,
           nickname: values.nickname,
@@ -160,18 +163,22 @@ class UserForm extends Component {
     })
   }
 
-  triggerValidatePassword = (rule, value, callback) => {
-    this.props.form.validateFields(['confirm'], err => {})
+  triggerValidatePassword (rule, value, callback) {
+    this.props.form.validateFields(['confirm'], err => {
+      if (err) {
+        console.log(err)
+      }
+    })
     callback()
   }
 
-  validatePassword = (rule, value, callback) => {
+  validatePassword (rule, value, callback) {
     const form = this.props.form
+    let result
     if (value && value !== form.getFieldValue('password')) {
-      callback('两次输入的密码不一致')
-    } else {
-      callback()
+      result = '两次输入的密码不一致'
     }
+    callback(result)
   }
 
   createFormItem (results) {
