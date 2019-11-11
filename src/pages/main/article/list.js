@@ -47,23 +47,26 @@ class ArticleListPage extends Component {
             id: item.id
           },
           withCredentials: true
-        }).then((res) => {
-          return responsePreprocessing(res)
-        }).then((data) => {
-          Modal.success({
-            title: '删除成功',
-            footer: null,
-            closable: false,
-            maskClosable: false,
-            onOk: () => {
-              this.getArticleList(this.state.pagination.current)
-            }
-          })
-        }).catch(err => {
-          this.setState({
-            pageLoading: false
-          })
         })
+          .then(res => {
+            return responsePreprocessing(res)
+          })
+          .then(data => {
+            Modal.success({
+              title: '删除成功',
+              footer: null,
+              closable: false,
+              maskClosable: false,
+              onOk: () => {
+                this.getArticleList(this.state.pagination.current)
+              }
+            })
+          })
+          .catch(err => {
+            this.setState({
+              pageLoading: false
+            })
+          })
       }
     })
   }
@@ -81,21 +84,24 @@ class ArticleListPage extends Component {
         media_id: item.media_id
       },
       withCredentials: true
-    }).then((res) => {
-      return responsePreprocessing(res)
-    }).then((data) => {
-      message.success(`文章《${data.info.title}》导入成功！`)
-      this.getArticleList(this.state.pagination.current)
-    }).catch(err => {
-      this.setState({
-        pageLoading: false
-      })
     })
+      .then(res => {
+        return responsePreprocessing(res)
+      })
+      .then(data => {
+        message.success(`文章《${data.info.title}》导入成功！`)
+        this.getArticleList(this.state.pagination.current)
+      })
+      .catch(err => {
+        this.setState({
+          pageLoading: false
+        })
+      })
   }
 
   getArticleList (page) {
     this.setState({
-      pageLoading: true,
+      pageLoading: true
     })
 
     axios({
@@ -106,23 +112,26 @@ class ArticleListPage extends Component {
         pageSize: 10
       },
       withCredentials: true
-    }).then((res) => {
-      return responsePreprocessing(res)
-    }).then((data) => {
-      this.setState({
-        articleList: data.list,
-        pageLoading: false,
-        pagination: {
-          current: data.page.current,
-          pageSize: data.page.size,
-          total: data.page.total
-        }
-      })
-    }).catch(err => {
-      this.setState({
-        pageLoading: false,
-      })
     })
+      .then(res => {
+        return responsePreprocessing(res)
+      })
+      .then(data => {
+        this.setState({
+          articleList: data.list,
+          pageLoading: false,
+          pagination: {
+            current: data.page.current,
+            pageSize: data.page.size,
+            total: data.page.total
+          }
+        })
+      })
+      .catch(err => {
+        this.setState({
+          pageLoading: false
+        })
+      })
   }
 
   render () {
@@ -156,7 +165,7 @@ class ArticleListPage extends Component {
         key: 'create_time',
         width: 200,
         render: (timeStamp, record) => {
-          return (<span>{moment(new Date(timeStamp)).format('YYYY-MM-DD HH:mm:ss')}</span>)
+          return <span>{moment(new Date(timeStamp)).format('YYYY-MM-DD HH:mm:ss')}</span>
         }
       },
       {
@@ -164,57 +173,71 @@ class ArticleListPage extends Component {
         key: 'action',
         width: 240,
         render: (text, record) => (
-            <span className="main-table-actions">
-              <Button icon="reload" onClick={this.handleSync.bind(this, record)}>更新</Button>
-              <Button type="danger" icon="delete" onClick={this.handleDelete.bind(this, record)}>删除</Button>
-            </span>
+          <span className="main-table-actions">
+            <Button icon="reload" onClick={this.handleSync.bind(this, record)}>
+              更新
+            </Button>
+            <Button type="danger" icon="delete" onClick={this.handleDelete.bind(this, record)}>
+              删除
+            </Button>
+          </span>
         )
       }
     ]
 
     return (
-        <div>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item><Link to="/">首页</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>文章管理</Breadcrumb.Item>
-          </Breadcrumb>
-          <Content style={{
-            background: '#fff', padding: 24, margin: 0, minHeight: 280
+      <div>
+        <Breadcrumb style={{ margin: '16px 0' }}>
+          <Breadcrumb.Item>
+            <Link to="/">首页</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>文章管理</Breadcrumb.Item>
+        </Breadcrumb>
+        <Content
+          style={{
+            background: '#fff',
+            padding: 24,
+            margin: 0,
+            minHeight: 280
           }}
-          >
-            <Row style={{ marginBottom: 24 }}>
-              <Col span={12}>
-                <h2>文章列表</h2>
-              </Col>
-              <Col span={12}>
-                <div className="f-r">
-                  <Link to="/article/new/"><Button type="primary" icon="cloud-download">导入文章</Button></Link>
-                </div>
-              </Col>
-            </Row>
+        >
+          <Row style={{ marginBottom: 24 }}>
+            <Col span={12}>
+              <h2>文章列表</h2>
+            </Col>
+            <Col span={12}>
+              <div className="f-r">
+                <Link to="/article/new/">
+                  <Button type="primary" icon="cloud-download">
+                    导入文章
+                  </Button>
+                </Link>
+              </div>
+            </Col>
+          </Row>
 
-            <Row>
-              <Col span={24}>
-                <Spin
-                    spinning={this.state.pageLoading}
-                    tip="加载中…"
-                    indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
-                >
-                  <Table
-                      className="main-table"
-                      columns={columns}
-                      rowKey="id"
-                      dataSource={this.state.articleList}
-                      pagination={{
-                        ...this.state.pagination,
-                        onChange: this.onPageChange.bind(this)
-                      }}
-                  />
-                </Spin>
-              </Col>
-            </Row>
-          </Content>
-        </div>
+          <Row>
+            <Col span={24}>
+              <Spin
+                spinning={this.state.pageLoading}
+                tip="加载中…"
+                indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
+              >
+                <Table
+                  className="main-table"
+                  columns={columns}
+                  rowKey="id"
+                  dataSource={this.state.articleList}
+                  pagination={{
+                    ...this.state.pagination,
+                    onChange: this.onPageChange.bind(this)
+                  }}
+                />
+              </Spin>
+            </Col>
+          </Row>
+        </Content>
+      </div>
     )
   }
 }

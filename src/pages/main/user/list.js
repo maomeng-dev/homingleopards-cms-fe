@@ -45,23 +45,26 @@ class UserListPage extends Component {
             id: uid
           },
           withCredentials: true
-        }).then((res) => {
-          return responsePreprocessing(res)
-        }).then((data) => {
-          Modal.success({
-            title: '删除成功',
-            footer: null,
-            closable: false,
-            maskClosable: false,
-            onOk: () => {
-              this.getUserList(this.state.pagination.current)
-            }
-          })
-        }).catch(err => {
-          this.setState({
-            pageLoading: false
-          })
         })
+          .then(res => {
+            return responsePreprocessing(res)
+          })
+          .then(data => {
+            Modal.success({
+              title: '删除成功',
+              footer: null,
+              closable: false,
+              maskClosable: false,
+              onOk: () => {
+                this.getUserList(this.state.pagination.current)
+              }
+            })
+          })
+          .catch(err => {
+            this.setState({
+              pageLoading: false
+            })
+          })
       }
     })
   }
@@ -79,24 +82,27 @@ class UserListPage extends Component {
         pageSize: 10
       },
       withCredentials: true
-    }).then((res) => {
-      return responsePreprocessing(res)
-    }).then((data) => {
-      this.setState({
-        userList: data.list,
-        pageLoading: false,
-
-        pagination: {
-          current: data.page.current,
-          pageSize: data.page.size,
-          total: data.page.total
-        }
-      })
-    }).catch(err => {
-      this.setState({
-        pageLoading: false
-      })
     })
+      .then(res => {
+        return responsePreprocessing(res)
+      })
+      .then(data => {
+        this.setState({
+          userList: data.list,
+          pageLoading: false,
+
+          pagination: {
+            current: data.page.current,
+            pageSize: data.page.size,
+            total: data.page.total
+          }
+        })
+      })
+      .catch(err => {
+        this.setState({
+          pageLoading: false
+        })
+      })
   }
 
   render () {
@@ -127,9 +133,7 @@ class UserListPage extends Component {
         dataIndex: 'nickname',
         key: 'nickname',
         width: 200,
-        render: (text, record) => (
-            <Link to={`/user/view/${record.id}`}>{text}</Link>
-        )
+        render: (text, record) => <Link to={`/user/view/${record.id}`}>{text}</Link>
       },
       {
         title: '帐号',
@@ -147,57 +151,71 @@ class UserListPage extends Component {
         key: 'action',
         width: 240,
         render: (text, record) => (
-            <span className="main-table-actions">
-              <Link to={`/user/edit/${record.id}`}><Button icon="edit">编辑</Button></Link>
-              <Button type="danger" icon="delete" onClick={this.handleDelete.bind(this, record.id)}>删除</Button>
-            </span>
+          <span className="main-table-actions">
+            <Link to={`/user/edit/${record.id}`}>
+              <Button icon="edit">编辑</Button>
+            </Link>
+            <Button type="danger" icon="delete" onClick={this.handleDelete.bind(this, record.id)}>
+              删除
+            </Button>
+          </span>
         )
       }
     ]
 
     return (
-        <div>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item><Link to="/">首页</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>用户管理</Breadcrumb.Item>
-          </Breadcrumb>
-          <Content style={{
-            background: '#fff', padding: 24, margin: 0, minHeight: 280
+      <div>
+        <Breadcrumb style={{ margin: '16px 0' }}>
+          <Breadcrumb.Item>
+            <Link to="/">首页</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>用户管理</Breadcrumb.Item>
+        </Breadcrumb>
+        <Content
+          style={{
+            background: '#fff',
+            padding: 24,
+            margin: 0,
+            minHeight: 280
           }}
-          >
-            <Row style={{ marginBottom: 24 }}>
-              <Col span={12}>
-                <h2>用户列表</h2>
-              </Col>
-              <Col span={12}>
-                <div className="f-r">
-                  <Link to="/user/new/"><Button type="primary" icon="plus">添加用户</Button></Link>
-                </div>
-              </Col>
-            </Row>
+        >
+          <Row style={{ marginBottom: 24 }}>
+            <Col span={12}>
+              <h2>用户列表</h2>
+            </Col>
+            <Col span={12}>
+              <div className="f-r">
+                <Link to="/user/new/">
+                  <Button type="primary" icon="plus">
+                    添加用户
+                  </Button>
+                </Link>
+              </div>
+            </Col>
+          </Row>
 
-            <Row>
-              <Col span={24}>
-                <Spin
-                    spinning={this.state.pageLoading}
-                    tip="加载中…"
-                    indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
-                >
-                  <Table
-                      className="main-table"
-                      columns={columns}
-                      rowKey="id"
-                      dataSource={this.state.userList}
-                      pagination={{
-                        ...this.state.pagination,
-                        onChange: this.onPageChange.bind(this)
-                      }}
-                  />
-                </Spin>
-              </Col>
-            </Row>
-          </Content>
-        </div>
+          <Row>
+            <Col span={24}>
+              <Spin
+                spinning={this.state.pageLoading}
+                tip="加载中…"
+                indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
+              >
+                <Table
+                  className="main-table"
+                  columns={columns}
+                  rowKey="id"
+                  dataSource={this.state.userList}
+                  pagination={{
+                    ...this.state.pagination,
+                    onChange: this.onPageChange.bind(this)
+                  }}
+                />
+              </Spin>
+            </Col>
+          </Row>
+        </Content>
+      </div>
     )
   }
 }

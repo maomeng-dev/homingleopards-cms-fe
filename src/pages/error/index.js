@@ -2,11 +2,7 @@ import React, { Component } from 'react'
 
 class ErrorPage extends Component {
   render () {
-    return (
-        <div>
-          400
-        </div>
-    )
+    return <div>400</div>
   }
 }
 

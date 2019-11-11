@@ -24,8 +24,7 @@ class ArticleItemPage extends Component {
     }
   }
 
-  componentWillMount () {
-  }
+  componentWillMount () {}
 
   componentDidMount () {
     this.getWechatList(this.state.pagination.current)
@@ -53,16 +52,19 @@ class ArticleItemPage extends Component {
       url: API.ARTICLE_IMPORT_WECHAT_ARTICLE,
       data: params,
       withCredentials: true
-    }).then((res) => {
-      return responsePreprocessing(res)
-    }).then((data) => {
-      message.success(`文章《${data.info.title}》导入成功！`)
-      this.getWechatList(this.state.pagination.current)
-    }).catch(err => {
-      this.setState({
-        wechatListLoading: false
-      })
     })
+      .then(res => {
+        return responsePreprocessing(res)
+      })
+      .then(data => {
+        message.success(`文章《${data.info.title}》导入成功！`)
+        this.getWechatList(this.state.pagination.current)
+      })
+      .catch(err => {
+        this.setState({
+          wechatListLoading: false
+        })
+      })
   }
 
   getWechatList (page) {
@@ -78,23 +80,26 @@ class ArticleItemPage extends Component {
         pageSize: 10
       },
       withCredentials: true
-    }).then((res) => {
-      return responsePreprocessing(res)
-    }).then((data) => {
-      this.setState({
-        wechatList: data.list,
-        wechatListLoading: false,
-        pagination: {
-          current: data.page.current,
-          pageSize: data.page.size,
-          total: data.page.total
-        }
-      })
-    }).catch(err => {
-      this.setState({
-        wechatListLoading: false
-      })
     })
+      .then(res => {
+        return responsePreprocessing(res)
+      })
+      .then(data => {
+        this.setState({
+          wechatList: data.list,
+          wechatListLoading: false,
+          pagination: {
+            current: data.page.current,
+            pageSize: data.page.size,
+            total: data.page.total
+          }
+        })
+      })
+      .catch(err => {
+        this.setState({
+          wechatListLoading: false
+        })
+      })
   }
 
   render () {
@@ -107,9 +112,9 @@ class ArticleItemPage extends Component {
         width: 100,
         render: (text, record) => {
           return (
-              <Tooltip title={text}>
-                <Icon type="barcode"/>
-              </Tooltip>
+            <Tooltip title={text}>
+              <Icon type="barcode"/>
+            </Tooltip>
           )
         }
       },
@@ -131,10 +136,10 @@ class ArticleItemPage extends Component {
         width: 300,
         render: (text, record) => {
           return (
-              <Fragment>
-                <div>更新时间：{moment(new Date(record.update_time)).format('YYYY-MM-DD HH:mm:ss')}</div>
-                <div>创建时间：{moment(new Date(record.create_time)).format('YYYY-MM-DD HH:mm:ss')}</div>
-              </Fragment>
+            <Fragment>
+              <div>更新时间：{moment(new Date(record.update_time)).format('YYYY-MM-DD HH:mm:ss')}</div>
+              <div>创建时间：{moment(new Date(record.create_time)).format('YYYY-MM-DD HH:mm:ss')}</div>
+            </Fragment>
           )
         }
       },
@@ -143,46 +148,57 @@ class ArticleItemPage extends Component {
         key: 'action',
         width: 100,
         render: (text, record) => {
-          return (
-              record.article_id === 0
-                  ?
-                  <Button type="primary" icon="cloud-download" onClick={this.onSyncArticle.bind(this, record)}>导入</Button>
-                  : <Button icon="reload" onClick={this.onSyncArticle.bind(this, record)}>更新</Button>
+          return record.article_id === 0 ? (
+            <Button type="primary" icon="cloud-download" onClick={this.onSyncArticle.bind(this, record)}>
+              导入
+            </Button>
+          ) : (
+            <Button icon="reload" onClick={this.onSyncArticle.bind(this, record)}>
+              更新
+            </Button>
           )
         }
       }
     ]
 
     return (
-        <div>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item><Link to="/">首页</Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to="/article/">文章管理</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>导入文章</Breadcrumb.Item>
-          </Breadcrumb>
-          <Content style={{
-            background: '#fff', padding: 24, margin: 0, minHeight: 280
+      <div>
+        <Breadcrumb style={{ margin: '16px 0' }}>
+          <Breadcrumb.Item>
+            <Link to="/">首页</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/article/">文章管理</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>导入文章</Breadcrumb.Item>
+        </Breadcrumb>
+        <Content
+          style={{
+            background: '#fff',
+            padding: 24,
+            margin: 0,
+            minHeight: 280
           }}
-          >
-            <Row>
-              <Col span={24}>
-                <h2>导入微信文章</h2>
-              </Col>
-            </Row>
-            <Spin tip="加载中…" spinning={this.state.wechatListLoading}>
-              <Table
-                  className="main-table"
-                  columns={wechatListColumn}
-                  rowKey="media_id"
-                  dataSource={this.state.wechatList}
-                  pagination={{
-                    ...this.state.pagination,
-                    onChange: this.onPageChange.bind(this)
-                  }}
-              />
-            </Spin>
-          </Content>
-        </div>
+        >
+          <Row>
+            <Col span={24}>
+              <h2>导入微信文章</h2>
+            </Col>
+          </Row>
+          <Spin tip="加载中…" spinning={this.state.wechatListLoading}>
+            <Table
+              className="main-table"
+              columns={wechatListColumn}
+              rowKey="media_id"
+              dataSource={this.state.wechatList}
+              pagination={{
+                ...this.state.pagination,
+                onChange: this.onPageChange.bind(this)
+              }}
+            />
+          </Spin>
+        </Content>
+      </div>
     )
   }
 }

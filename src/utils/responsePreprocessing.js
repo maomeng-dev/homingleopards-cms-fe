@@ -1,6 +1,6 @@
 import { Modal } from 'antd'
 
-const responsePreprocessing = function (res, silent = false, errorMap = {}) {
+const responsePreprocessing = function(res, silent = false, errorMap = {}) {
   return new Promise((resolve, reject) => {
     let resData = res.data
     if (resData.errno === 0) {
@@ -11,7 +11,7 @@ const responsePreprocessing = function (res, silent = false, errorMap = {}) {
       let message = errorMap[resData.errno] || resData.errmsg
 
       switch (resData.errno) {
-        case 1001 :
+        case 1001:
           // not login
           Modal.error({
             title: '错误',
@@ -25,7 +25,7 @@ const responsePreprocessing = function (res, silent = false, errorMap = {}) {
           }, 3000)
           break
 
-        default :
+        default:
           // default error
           if (!silent) {
             Modal.error({

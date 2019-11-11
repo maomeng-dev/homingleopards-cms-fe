@@ -1,33 +1,33 @@
 @import '~antd/dist/antd.css';
 
 html, body {
-  background-color: #f0f2f5;
+    background-color: #f0f2f5;
 }
 
 .f-l {
-  float: left;
+    float: left;
 }
 
 .f-r {
-  float: right;
+    float: right;
 }
 
 .ta-c {
-  text-align: center;
+    text-align: center;
 }
 
 .link-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline;
-  margin: 0;
-  padding: 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
 }
 
 .link-button:hover,
 .link-button:focus {
-  text-decoration: none;
-  outline: none;
+    text-decoration: none;
+    outline: none;
 }
