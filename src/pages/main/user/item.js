@@ -282,15 +282,15 @@ class UserForm extends Component {
           {this.createFormItem({
             view: <span>{userData.is_super_user ? '管理员' : '编辑'}</span>,
             edit: (
-              <Select defaultValue={userData.is_super_user ? '1' : '2'} disabled style={{ width: 200 }}>
+              <Select defaultValue={userData.is_super_user ? '1' : '0'} disabled style={{ width: 200 }}>
                 <Option value="1">管理员</Option>
-                <Option value="2">编辑</Option>
+                <Option value="0">编辑</Option>
               </Select>
             ),
             new: (
-              <Select defaultValue={userData.is_super_user ? '1' : '2'} disabled style={{ width: 200 }}>
+              <Select defaultValue={userData.is_super_user ? '1' : '0'} disabled style={{ width: 200 }}>
                 <Option value="1">管理员</Option>
-                <Option value="2">编辑</Option>
+                <Option value="0">编辑</Option>
               </Select>
             )
           })}
