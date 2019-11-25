@@ -164,7 +164,7 @@ class UserForm extends Component {
   }
 
   triggerValidatePassword (rule, value, callback) {
-    this.props.form.validateFields(['confirm'], err => {
+    this.props.form.validateFields(['confirm'], { force: true }, err => {
       if (err) {
         console.log(err)
       }
@@ -247,7 +247,7 @@ class UserForm extends Component {
             message: '请输入密码'
           },
           {
-            validator: this.triggerValidatePassword
+            validator: this.triggerValidatePassword.bind(this)
           }
         ],
         initialValue: userData.password
@@ -259,7 +259,7 @@ class UserForm extends Component {
             message: '请再次输入确认密码'
           },
           {
-            validator: this.validatePassword
+            validator: this.validatePassword.bind(this)
           }
         ]
       })(<Input type="password" placeholder="请再次输入确认密码…"/>),
@@ -339,7 +339,7 @@ class UserForm extends Component {
                       })
                     }}
                   >
-                    重置密码
+                    修改密码
                   </Button>
                 </Form.Item>
               </Fragment>
